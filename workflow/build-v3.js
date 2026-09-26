@@ -204,8 +204,11 @@ const prompt = [
   'Edit the CUSTOMER ROOM photo: add to it the professional eyelash extension bed ("maca", model ' + nomes[r.modelo] + ') shown in the PRODUCT REFERENCE photo.',
   'The result must be the CUSTOMER ROOM photo: same walls, floor, furniture, lighting and framing. Never return or reuse the background of the PRODUCT REFERENCE photo.',
   'From the PRODUCT REFERENCE, copy only the bed, with its exact design: shape, base, legs, tufting and proportions. Ignore every other object, person, wall and floor in that photo, and do not mix in details from other furniture.',
-  'Place one bed standing on the floor of the customer room, in a free and natural spot, with realistic scale, matching the room perspective, light and shadows.',
-  'Change only the upholstery color of the bed to: ' + r.cor + '.',
+  'The PRODUCT REFERENCE may be a collage with several photos; all of them show the same single bed model.',
+  'Add exactly one full-size bed (a real treatment bed, around 1.9 m long), standing on the floor with realistic scale, matching the room perspective, light and shadows.',
+  'If the customer room already has a treatment bed or lounge bed, replace it with the new bed in the same position. Otherwise, place the new bed in a free and natural spot.',
+  'Change only the upholstery color of the new bed to: ' + r.cor + '. Keep the colors of every other object in the room exactly as they are.',
+  'When replacing an existing bed, remove it completely, including its legs and base, so that only the new bed remains.',
   'Do not add, remove or move other objects in the room, and do not add any text or logos. Return a single photorealistic image.',
 ].join('\\n');
 return [{ json: { body: {

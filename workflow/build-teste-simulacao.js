@@ -1,5 +1,5 @@
 // Gera workflow-teste-simulacao.json: testa só a geração de imagem (Gemini), sem WhatsApp.
-// Usa a foto da Clássica (estúdio) como "ambiente da cliente", insere a Luxo na cor de teste
+// Usa a foto da Master como "ambiente da cliente", insere a Clássica na cor de teste
 // e grava o resultado em assets/teste-simulacao.<ext>.
 //
 // Uso: node workflow/build-v3.js && node workflow/build-teste-simulacao.js
@@ -23,7 +23,7 @@ const nodes = [
   },
   {
     parameters: {
-      jsCode: "return [{ json: { modelo: 'luxo', cor: 'rosa bebê', foto: 'teste' } }];",
+      jsCode: "return [{ json: { modelo: 'classica', cor: 'azul marinho', foto: 'teste' } }];",
     },
     id: 'd0000000-0000-4000-8000-000000000002',
     name: 'Separar resposta',
@@ -32,7 +32,7 @@ const nodes = [
     position: [200, 0],
   },
   {
-    parameters: { operation: 'read', fileSelector: ASSETS + 'macas/classica.jpg', options: {} },
+    parameters: { operation: 'read', fileSelector: ASSETS + 'macas/master.jpg', options: {} },
     id: 'd0000000-0000-4000-8000-000000000003',
     name: 'Ler ambiente de teste',
     type: 'n8n-nodes-base.readWriteFile',
