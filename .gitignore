@@ -1,0 +1,12 @@
+# Dados locais do n8n: credenciais criptografadas, banco sqlite, logs com conversas de clientes
+.n8n/
+
+# Logs
+*.log
+
+# Configurações locais do Claude Code
+.claude/settings.local.json
+
+# Segredos
+.env
+.env.*

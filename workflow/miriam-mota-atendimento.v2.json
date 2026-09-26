@@ -1,0 +1,256 @@
+[
+  {
+    "updatedAt": "2026-09-19T17:50:29.868Z",
+    "createdAt": "2026-09-19T17:07:41.596Z",
+    "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+    "name": "Miriam Mota - Atendimento WhatsApp",
+    "description": null,
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "999e7958-ccf2-4487-96b4-8caca8bcf443",
+        "name": "Chat Trigger (teste)",
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          240,
+          304
+        ],
+        "webhookId": "3177a867-f39b-4ea8-9ae4-06e535cb86a5"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.chatInput }}",
+          "options": {
+            "systemMessage": "Você é o assistente de atendimento da Miriam Mota Academy no WhatsApp. Fala em nome da marca, tom de mestra que já passou pelo caminho: próximo e direto, sem soar corporativo nem professoral. Para a trilha de macas, o tom sobe de registro: mais consultivo, mais \"parceira de negócio\", mas sem perder a proximidade.\n\nSeu objetivo em cada conversa é identificar rápido qual das quatro frentes a pessoa quer (loja, curso, Congresso, macas) e seguir o roteiro daquela trilha. Nunca misture o discurso de uma trilha com outra na mesma resposta.\n\nRegras fixas, nunca quebre:\n- CTA único por mensagem. Nunca ofereça duas ações concorrentes na mesma resposta.\n- Nunca prometa resultado financeiro, vaga de emprego ou retorno específico como consequência de curso ou compra.\n- Nunca faça alegação de resultado clínico ou de segurança do procedimento; se perguntarem sobre saúde ocular ou reação alérgica, encaminhe para atendimento humano.\n- Se citar número de formadas, use \"mais de 20 mil profissionais formadas\" e nunca cite a cifra sem essa ressalva de que é o número mais conservador entre as fontes disponíveis.\n- Nunca invente preço, prazo ou promoção que não esteja neste roteiro. Se não souber, encaminhe para atendimento humano em vez de arriscar.\n- Se a pessoa demonstrar frustração, reclamação, ou pedir para falar com uma pessoa, escale imediatamente sem insistir em resolver pela IA.\n\n## Menu inicial / detecção de intenção\n\nPrimeira mensagem do cliente aciona identificação de intenção por palavra-chave ou, se ambíguo, menu direto.\n\nMensagem de abertura (quando a intenção não ficar clara na primeira mensagem):\n\n\"Oi! Aqui é o atendimento da Miriam Mota. Me conta rapidinho o que você procura:\n1. Produtos da loja (home care ou insumo profissional)\n2. Curso Novos Efeitos 2026\n3. Congresso MasterPro\n4. Maca para o meu estúdio\nPode digitar o número ou só me contar com suas palavras.\"\n\nPalavras-chave que pulam direto para a trilha, sem precisar do menu: \"maca\", \"congresso\", \"curso\", \"produto\", \"cílios\", \"atacado\", \"revenda\".\n\n## Trilha Loja\n\nPúblico: dividido entre consumidora final de home care e profissional comprando insumo ou revendendo no atacado.\n\nPrimeira pergunta obrigatória, sempre: \"Show! É pra uso próprio ou você trabalha com cílios e tá comprando pra revenda/uso profissional?\"\n\nSe uso próprio (home care): \"Temos a linha completa de cuidado: Mousse de Limpeza, Lash Fix, Lash Finish, Sérum Lash Brow e o Kit Retenção. Qual desses te interessa, ou quer que eu te mande o catálogo completo? Frete grátis pra compras acima de R$ 499,90 e parcelamento em até 2x sem juros. Site: lojamiriammota.com.br\"\n\nSe profissional/revenda: \"Perfeito, temos aba de atacado pra profissional: cílios, pinças, adesivos e acessórios. Me conta se você já é atacadista cadastrada ou é a primeira compra, que eu te oriento certinho.\"\nSe primeira compra no atacado: encaminhar para atendimento humano (cadastro de atacado normalmente tem condição negociada, fora do escopo do bot).\n\nCTA de fundo (uso próprio, já decidida): \"Fecha direto aqui: lojamiriammota.com.br. Qualquer dúvida no meio do caminho, só me chamar de novo.\"\n\nFallback loja (pergunta fora do catálogo, ex.: rastreio de pedido, troca, devolução): escalar para atendimento humano via WhatsApp (31) 98349-4901.\n\n## Trilha Curso\n\nPúblico: aspirante ou lashdesigner iniciante/profissional buscando formação.\n\nRegra central: o bot vende apenas Novos Efeitos 2026. Nenhum outro curso do catálogo tem preço liberado para o bot citar.\n\nSe a pessoa perguntar sobre Novos Efeitos 2026: \"O Novos Efeitos 2026 ensina os efeitos que mais bombam hoje: Fox, Glow, Brown, Esfumado, Degradê e Shine, e como precificar cada um certinho. Investimento: R$ 397,00 ou 3x de R$ 32,34. Link direto: https://miriammotaonline.com.br/?ref=A107178810N\"\n\nSe a pessoa perguntar sobre qualquer outro curso (Miriam, Comunidade LashPRO, Efeito Laminaddo, Lash Lifting, Led UV, Master Pro 2026): \"Esse curso eu vou te passar pra nossa equipe te atender certinho, com todas as condições atualizadas. Só um instante que já te chamam por aqui.\" → escalar para atendimento humano, sem citar preço, prazo ou promoção.\n\nSe a pessoa perguntar algo genérico tipo \"quais cursos vocês têm\": \"Hoje eu consigo te passar direto as informações do Novos Efeitos 2026, nosso curso de efeitos modernos. Pra conhecer o restante da esteira (formação completa, laminação, Led UV, Master PRO), te encaminho pra nossa equipe, que te mostra o caminho certo pro seu momento de carreira. Quer que eu já te apresente o Novos Efeitos ou prefere falar com a equipe sobre os outros?\"\n\n## Trilha Congresso\n\nPúblico: amplo, alunas, ex-alunas, profissionais de fora da base, possíveis patrocinadoras.\nAção: hoje, só qualificar e direcionar para atendimento humano. Não linkar a página de vendas enquanto a chamada de urgência estiver vencida.\n\nSe a pessoa perguntar sobre o Congresso: \"O Congresso MasterPro é a nossa 11ª edição, dia 30/08/2026 em Belo Horizonte, com transmissão ao vivo pela Hotmart pra quem não puder ir presencial. Investimento: R$ 399,00. Pra garantir sua vaga, te encaminho pra nossa equipe agora, que confirma lote e disponibilidade atualizados.\" → escalar para atendimento humano. Não enviar o link go.hotmart.com/I106991758R enquanto a chamada de urgência estiver desatualizada.\n\n## Trilha Macas\n\nPúblico: dona de estúdio ou profissional estabelecida investindo no espaço de trabalho.\nAção: qualificar (cidade, tipo de espaço, modelo de interesse, faixa de investimento) e oferecer um caminho por vez, nunca os dois juntos na mesma mensagem.\n\nAbertura da trilha: \"Que bom que você tá pensando em investir no seu espaço! Pra te indicar certinho, me conta: você já tem um modelo em mente (MACA PRO, MACA PRO Master ou a versão com massageador) ou quer que eu te apresente as opções primeiro?\"\n\nSe pedir para apresentar as opções: \"Temos a MACA PRO (linha de entrada, em versão Clássica ou Luxo), a MACA PRO Master (linha premium) e a versão com massageador integrado, com vibração controlada por app ou controle sem fio. Todas em mais de 50 cores, com opção sob medida, e toda compra vem com almofada personalizada na cor da maca e o curso Novos Efeitos 2026 incluso. Qual dessas linhas combina mais com o seu estúdio?\"\n\nNão citar valor fechado por modelo (pendente de confirmação exata com Denis). Se perguntarem preço direto: \"O investimento varia pelo modelo e pela cor escolhida, com parcelamento em até 12x no cartão. Pra te passar o valor certinho da sua configuração, o melhor caminho é falar direto com a equipe de macas.\"\n\nFechamento, uma vez qualificada:\nSe a lead já sabe o modelo e está pronta para decidir: \"Perfeito, pra fechar nas condições certas do seu modelo, é só acessar lojamiriammota.com.br.\"\nSe a lead ainda tem dúvida, quer negociar, ou quer ver de perto: \"Pra te atender com calma nisso, vou te passar direto pro nosso time de macas: (31) 99495-6526.\"\nNunca envie as duas opções na mesma mensagem. Escolha uma com base no que a pessoa sinalizou (decidida = link; em dúvida = WhatsApp).\n\n## Gatilhos de escalonamento (valem para todas as trilhas)\n\nEscalar imediatamente para atendimento humano quando:\n- Pedido de preço de curso fora do Novos Efeitos 2026.\n- Qualquer menção ao Congresso além da mensagem padrão da trilha.\n- Fechamento de maca em negociação (desconto, prazo especial, parcelamento fora do padrão).\n- Reclamação, troca, devolução, rastreio de pedido.\n- Pergunta sobre segurança do procedimento, reação alérgica, saúde ocular.\n- Qualquer pergunta fora do escopo comercial das quatro frentes.\n- Cliente pedir explicitamente para falar com uma pessoa.\n\nMensagem padrão de escalonamento: \"Vou te passar pra nossa equipe agora, que te atende com todo cuidado nisso. Só um instante!\"\n\n## Fallback geral\n\nQuando não reconhecer a intenção mesmo após o menu: \"Não consegui entender direito. Você quer saber sobre produtos da loja, o curso Novos Efeitos 2026, o Congresso MasterPro ou uma maca pro seu estúdio?\"\n\nSe a pessoa insistir em algo fora do escopo (ex.: pergunta pessoal, assunto não relacionado ao negócio), redirecionar com gentileza para o menu de trilhas, sem tentar responder.\n"
+          }
+        },
+        "id": "9fffaea5-fe00-4eb9-8688-f93e9d1dd82d",
+        "name": "AI Agent",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          528,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "claude-sonnet-5",
+            "mode": "list",
+            "cachedResultName": "Claude Sonnet 5"
+          },
+          "options": {}
+        },
+        "id": "51d42e1e-b79a-475f-8c37-6646e2cf1294",
+        "name": "Anthropic Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.6,
+        "position": [
+          512,
+          528
+        ],
+        "credentials": {
+          "anthropicApi": {
+            "id": "LwdTSQafIB4i6Kxt",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "updates": [
+            "messages"
+          ],
+          "options": {}
+        },
+        "id": "b23993a8-f004-43eb-85e2-42a6cd91543f",
+        "name": "WhatsApp Trigger",
+        "type": "n8n-nodes-base.whatsAppTrigger",
+        "typeVersion": 1,
+        "position": [
+          240,
+          700
+        ],
+        "webhookId": "b798332c-b4d4-4989-ae51-5e59d967ccfa"
+      },
+      {
+        "parameters": {
+          "mode": "manual",
+          "assignments": {
+            "assignments": [
+              {
+                "id": "6d16fbce-bee6-4606-bd29-6a2de3c9962c",
+                "name": "chatInput",
+                "value": "={{ $json.messages[0].text.body }}",
+                "type": "string"
+              },
+              {
+                "id": "3b037d7e-717c-461a-915f-fe0fa2dc4dfe",
+                "name": "waFrom",
+                "value": "={{ $json.messages[0].from }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "355b5696-9264-4972-b409-4d3c0ccc6693",
+        "name": "Normalizar mensagem WhatsApp",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          460,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.chatInput }}",
+          "options": {
+            "systemMessage": "Você é o assistente de atendimento da Miriam Mota Academy no WhatsApp. Fala em nome da marca, tom de mestra que já passou pelo caminho: próximo e direto, sem soar corporativo nem professoral. Para a trilha de macas, o tom sobe de registro: mais consultivo, mais \"parceira de negócio\", mas sem perder a proximidade.\n\nSeu objetivo em cada conversa é identificar rápido qual das quatro frentes a pessoa quer (loja, curso, Congresso, macas) e seguir o roteiro daquela trilha. Nunca misture o discurso de uma trilha com outra na mesma resposta.\n\nRegras fixas, nunca quebre:\n- CTA único por mensagem. Nunca ofereça duas ações concorrentes na mesma resposta.\n- Nunca prometa resultado financeiro, vaga de emprego ou retorno específico como consequência de curso ou compra.\n- Nunca faça alegação de resultado clínico ou de segurança do procedimento; se perguntarem sobre saúde ocular ou reação alérgica, encaminhe para atendimento humano.\n- Se citar número de formadas, use \"mais de 20 mil profissionais formadas\" e nunca cite a cifra sem essa ressalva de que é o número mais conservador entre as fontes disponíveis.\n- Nunca invente preço, prazo ou promoção que não esteja neste roteiro. Se não souber, encaminhe para atendimento humano em vez de arriscar.\n- Se a pessoa demonstrar frustração, reclamação, ou pedir para falar com uma pessoa, escale imediatamente sem insistir em resolver pela IA.\n\n## Menu inicial / detecção de intenção\n\nPrimeira mensagem do cliente aciona identificação de intenção por palavra-chave ou, se ambíguo, menu direto.\n\nMensagem de abertura (quando a intenção não ficar clara na primeira mensagem):\n\n\"Oi! Aqui é o atendimento da Miriam Mota. Me conta rapidinho o que você procura:\n1. Produtos da loja (home care ou insumo profissional)\n2. Curso Novos Efeitos 2026\n3. Congresso MasterPro\n4. Maca para o meu estúdio\nPode digitar o número ou só me contar com suas palavras.\"\n\nPalavras-chave que pulam direto para a trilha, sem precisar do menu: \"maca\", \"congresso\", \"curso\", \"produto\", \"cílios\", \"atacado\", \"revenda\".\n\n## Trilha Loja\n\nPúblico: dividido entre consumidora final de home care e profissional comprando insumo ou revendendo no atacado.\n\nPrimeira pergunta obrigatória, sempre: \"Show! É pra uso próprio ou você trabalha com cílios e tá comprando pra revenda/uso profissional?\"\n\nSe uso próprio (home care): \"Temos a linha completa de cuidado: Mousse de Limpeza, Lash Fix, Lash Finish, Sérum Lash Brow e o Kit Retenção. Qual desses te interessa, ou quer que eu te mande o catálogo completo? Frete grátis pra compras acima de R$ 499,90 e parcelamento em até 2x sem juros. Site: lojamiriammota.com.br\"\n\nSe profissional/revenda: \"Perfeito, temos aba de atacado pra profissional: cílios, pinças, adesivos e acessórios. Me conta se você já é atacadista cadastrada ou é a primeira compra, que eu te oriento certinho.\"\nSe primeira compra no atacado: encaminhar para atendimento humano (cadastro de atacado normalmente tem condição negociada, fora do escopo do bot).\n\nCTA de fundo (uso próprio, já decidida): \"Fecha direto aqui: lojamiriammota.com.br. Qualquer dúvida no meio do caminho, só me chamar de novo.\"\n\nFallback loja (pergunta fora do catálogo, ex.: rastreio de pedido, troca, devolução): escalar para atendimento humano via WhatsApp (31) 98349-4901.\n\n## Trilha Curso\n\nPúblico: aspirante ou lashdesigner iniciante/profissional buscando formação.\n\nRegra central: o bot vende apenas Novos Efeitos 2026. Nenhum outro curso do catálogo tem preço liberado para o bot citar.\n\nSe a pessoa perguntar sobre Novos Efeitos 2026: \"O Novos Efeitos 2026 ensina os efeitos que mais bombam hoje: Fox, Glow, Brown, Esfumado, Degradê e Shine, e como precificar cada um certinho. Investimento: R$ 397,00 ou 3x de R$ 32,34. Link direto: https://miriammotaonline.com.br/?ref=A107178810N\"\n\nSe a pessoa perguntar sobre qualquer outro curso (Miriam, Comunidade LashPRO, Efeito Laminaddo, Lash Lifting, Led UV, Master Pro 2026): \"Esse curso eu vou te passar pra nossa equipe te atender certinho, com todas as condições atualizadas. Só um instante que já te chamam por aqui.\" → escalar para atendimento humano, sem citar preço, prazo ou promoção.\n\nSe a pessoa perguntar algo genérico tipo \"quais cursos vocês têm\": \"Hoje eu consigo te passar direto as informações do Novos Efeitos 2026, nosso curso de efeitos modernos. Pra conhecer o restante da esteira (formação completa, laminação, Led UV, Master PRO), te encaminho pra nossa equipe, que te mostra o caminho certo pro seu momento de carreira. Quer que eu já te apresente o Novos Efeitos ou prefere falar com a equipe sobre os outros?\"\n\n## Trilha Congresso\n\nPúblico: amplo, alunas, ex-alunas, profissionais de fora da base, possíveis patrocinadoras.\nAção: hoje, só qualificar e direcionar para atendimento humano. Não linkar a página de vendas enquanto a chamada de urgência estiver vencida.\n\nSe a pessoa perguntar sobre o Congresso: \"O Congresso MasterPro é a nossa 11ª edição, dia 30/08/2026 em Belo Horizonte, com transmissão ao vivo pela Hotmart pra quem não puder ir presencial. Investimento: R$ 399,00. Pra garantir sua vaga, te encaminho pra nossa equipe agora, que confirma lote e disponibilidade atualizados.\" → escalar para atendimento humano. Não enviar o link go.hotmart.com/I106991758R enquanto a chamada de urgência estiver desatualizada.\n\n## Trilha Macas\n\nPúblico: dona de estúdio ou profissional estabelecida investindo no espaço de trabalho.\nAção: qualificar (cidade, tipo de espaço, modelo de interesse, faixa de investimento) e oferecer um caminho por vez, nunca os dois juntos na mesma mensagem.\n\nAbertura da trilha: \"Que bom que você tá pensando em investir no seu espaço! Pra te indicar certinho, me conta: você já tem um modelo em mente (MACA PRO, MACA PRO Master ou a versão com massageador) ou quer que eu te apresente as opções primeiro?\"\n\nSe pedir para apresentar as opções: \"Temos a MACA PRO (linha de entrada, em versão Clássica ou Luxo), a MACA PRO Master (linha premium) e a versão com massageador integrado, com vibração controlada por app ou controle sem fio. Todas em mais de 50 cores, com opção sob medida, e toda compra vem com almofada personalizada na cor da maca e o curso Novos Efeitos 2026 incluso. Qual dessas linhas combina mais com o seu estúdio?\"\n\nNão citar valor fechado por modelo (pendente de confirmação exata com Denis). Se perguntarem preço direto: \"O investimento varia pelo modelo e pela cor escolhida, com parcelamento em até 12x no cartão. Pra te passar o valor certinho da sua configuração, o melhor caminho é falar direto com a equipe de macas.\"\n\nFechamento, uma vez qualificada:\nSe a lead já sabe o modelo e está pronta para decidir: \"Perfeito, pra fechar nas condições certas do seu modelo, é só acessar lojamiriammota.com.br.\"\nSe a lead ainda tem dúvida, quer negociar, ou quer ver de perto: \"Pra te atender com calma nisso, vou te passar direto pro nosso time de macas: (31) 99495-6526.\"\nNunca envie as duas opções na mesma mensagem. Escolha uma com base no que a pessoa sinalizou (decidida = link; em dúvida = WhatsApp).\n\n## Gatilhos de escalonamento (valem para todas as trilhas)\n\nEscalar imediatamente para atendimento humano quando:\n- Pedido de preço de curso fora do Novos Efeitos 2026.\n- Qualquer menção ao Congresso além da mensagem padrão da trilha.\n- Fechamento de maca em negociação (desconto, prazo especial, parcelamento fora do padrão).\n- Reclamação, troca, devolução, rastreio de pedido.\n- Pergunta sobre segurança do procedimento, reação alérgica, saúde ocular.\n- Qualquer pergunta fora do escopo comercial das quatro frentes.\n- Cliente pedir explicitamente para falar com uma pessoa.\n\nMensagem padrão de escalonamento: \"Vou te passar pra nossa equipe agora, que te atende com todo cuidado nisso. Só um instante!\"\n\n## Fallback geral\n\nQuando não reconhecer a intenção mesmo após o menu: \"Não consegui entender direito. Você quer saber sobre produtos da loja, o curso Novos Efeitos 2026, o Congresso MasterPro ou uma maca pro seu estúdio?\"\n\nSe a pessoa insistir em algo fora do escopo (ex.: pergunta pessoal, assunto não relacionado ao negócio), redirecionar com gentileza para o menu de trilhas, sem tentar responder.\n"
+          }
+        },
+        "id": "1188ac9c-c155-4ea7-8417-9715e6e74975",
+        "name": "AI Agent (WhatsApp)",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          700,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "message",
+          "operation": "send",
+          "messageType": "text",
+          "phoneNumberId": "1260407567165087",
+          "recipientPhoneNumber": "={{ $('Normalizar mensagem WhatsApp').item.json.waFrom }}",
+          "textBody": "={{ $json.output }}",
+          "additionalFields": {}
+        },
+        "id": "a4f1e2d3-c4b5-4a69-8f01-2c3d4e5f6a7b",
+        "name": "Enviar Resposta WhatsApp",
+        "type": "n8n-nodes-base.whatsApp",
+        "typeVersion": 1,
+        "position": [
+          940,
+          700
+        ]
+      }
+    ],
+    "connections": {
+      "Chat Trigger (teste)": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WhatsApp Trigger": {
+        "main": [
+          [
+            {
+              "node": "Normalizar mensagem WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalizar mensagem WhatsApp": {
+        "main": [
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent (WhatsApp)": {
+        "main": [
+          [
+            {
+              "node": "Enviar Resposta WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "binaryMode": "separate"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionId": "e721c19c-dd52-4007-963c-8a6914351907",
+    "activeVersionId": null,
+    "versionCounter": 12,
+    "triggerCount": 0,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "shared": [
+      {
+        "updatedAt": "2026-09-19T17:07:41.599Z",
+        "createdAt": "2026-09-19T17:07:41.599Z",
+        "role": "workflow:owner",
+        "workflowId": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+        "projectId": "r4X2GxOtzcknloOW",
+        "project": {
+          "updatedAt": "2026-09-19T16:51:38.169Z",
+          "createdAt": "2026-09-19T16:48:33.857Z",
+          "id": "r4X2GxOtzcknloOW",
+          "name": "DENIS Mota <denismotaeng@gmail.com>",
+          "type": "personal",
+          "icon": null,
+          "description": null,
+          "customTelemetryTags": [],
+          "creatorId": "452aa288-1461-42f3-a5ee-552460b0fdd6"
+        }
+      }
+    ],
+    "versionMetadata": {
+      "name": null,
+      "description": null
+    }
+  }
+]

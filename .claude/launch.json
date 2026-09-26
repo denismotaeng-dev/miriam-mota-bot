@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "n8n",
+      "runtimeExecutable": "powershell.exe",
+      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", "start-n8n.ps1"],
+      "port": 5678
+    }
+  ]
+}
