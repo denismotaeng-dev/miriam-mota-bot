@@ -176,6 +176,20 @@ Pra te atender com calma nisso, vou te passar direto pro nosso time de macas: (3
 
 Nunca envie as duas opções na mesma mensagem. Escolha uma com base no que a pessoa sinalizou (decidida = link; em dúvida = WhatsApp).
 
+**Simulação no ambiente da cliente (gerada com o Gemini):**
+
+Depois que a lead demonstrar interesse num modelo, o bot oferece uma vez:
+
+```
+Quer ver como ela fica no seu espaço? Me manda uma foto do ambiente e me diz a cor que você quer, que eu te mostro uma simulação.
+```
+
+- Modelos com simulação: MACA PRO Clássica, MACA PRO Luxo e MACA PRO Master. A versão com massageador ainda não tem.
+- Cor livre, pelo nome ou pelo código que a cliente der.
+- Com modelo, cor e foto em mãos, o bot devolve a foto do ambiente com a maca inserida, avisa que a imagem é ilustrativa (a cor real pode variar) e segue para o próximo passo da trilha, com um único CTA.
+- Limite de 3 simulações por conversa; depois disso, o bot oferece o time de macas.
+- Fotos de referência de cada modelo ficam em `assets/macas/` (`classica.jpg`, `luxo.jpg`, `master.jpg`).
+
 ---
 
 ## 7. Gatilhos de escalonamento (valem para todas as trilhas)

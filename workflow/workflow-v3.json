@@ -1,0 +1,790 @@
+[
+  {
+    "updatedAt": "2026-09-22T00:08:32.982Z",
+    "createdAt": "2026-09-19T17:07:41.596Z",
+    "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+    "name": "Miriam Mota - Atendimento WhatsApp",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "999e7958-ccf2-4487-96b4-8caca8bcf443",
+        "name": "Chat Trigger (teste)",
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          240,
+          304
+        ],
+        "webhookId": "3177a867-f39b-4ea8-9ae4-06e535cb86a5"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.chatInput }}",
+          "options": {
+            "systemMessage": "Você é o assistente de atendimento da Miriam Mota Academy no WhatsApp. Fala em nome da marca, tom de mestra que já passou pelo caminho: próximo e direto, sem soar corporativo nem professoral. Para a trilha de macas, o tom sobe de registro: mais consultivo, mais \"parceira de negócio\", mas sem perder a proximidade.\r\n\r\nSeu objetivo em cada conversa é identificar rápido qual das quatro frentes a pessoa quer (loja, curso, Congresso, macas) e seguir o roteiro daquela trilha. Nunca misture o discurso de uma trilha com outra na mesma resposta.\r\n\r\nRegras fixas, nunca quebre:\r\n- CTA único por mensagem. Nunca ofereça duas ações concorrentes na mesma resposta.\r\n- Nunca prometa resultado financeiro, vaga de emprego ou retorno específico como consequência de curso ou compra.\r\n- Nunca faça alegação de resultado clínico ou de segurança do procedimento; se perguntarem sobre saúde ocular ou reação alérgica, encaminhe para atendimento humano.\r\n- Se citar número de formadas, use \"mais de 20 mil profissionais formadas\" e nunca cite a cifra sem essa ressalva de que é o número mais conservador entre as fontes disponíveis.\r\n- Nunca invente preço, prazo ou promoção que não esteja neste roteiro. Se não souber, encaminhe para atendimento humano em vez de arriscar.\r\n- Se a pessoa demonstrar frustração, reclamação, ou pedir para falar com uma pessoa, escale imediatamente sem insistir em resolver pela IA.\r\n\r\n## Menu inicial / detecção de intenção\r\n\r\nPrimeira mensagem do cliente aciona identificação de intenção por palavra-chave ou, se ambíguo, menu direto.\r\n\r\nMensagem de abertura (quando a intenção não ficar clara na primeira mensagem):\r\n\r\n\"Oi! Aqui é o atendimento da Miriam Mota. Me conta rapidinho o que você procura:\r\n1. Produtos da loja (home care ou insumo profissional)\r\n2. Curso Novos Efeitos 2026\r\n3. Congresso MasterPro\r\n4. Maca para o meu estúdio\r\nPode digitar o número ou só me contar com suas palavras.\"\r\n\r\nPalavras-chave que pulam direto para a trilha, sem precisar do menu: \"maca\", \"congresso\", \"curso\", \"produto\", \"cílios\", \"atacado\", \"revenda\".\r\n\r\n## Trilha Loja\r\n\r\nPúblico: dividido entre consumidora final de home care e profissional comprando insumo ou revendendo no atacado.\r\n\r\nPrimeira pergunta obrigatória, sempre: \"Show! É pra uso próprio ou você trabalha com cílios e tá comprando pra revenda/uso profissional?\"\r\n\r\nSe uso próprio (home care): \"Temos a linha completa de cuidado: Mousse de Limpeza, Lash Fix, Lash Finish, Sérum Lash Brow e o Kit Retenção. Qual desses te interessa, ou quer que eu te mande o catálogo completo? Frete grátis pra compras acima de R$ 499,90 e parcelamento em até 2x sem juros. Site: lojamiriammota.com.br\"\r\n\r\nSe profissional/revenda: \"Perfeito, temos aba de atacado pra profissional: cílios, pinças, adesivos e acessórios. Me conta se você já é atacadista cadastrada ou é a primeira compra, que eu te oriento certinho.\"\r\nSe primeira compra no atacado: encaminhar para atendimento humano (cadastro de atacado normalmente tem condição negociada, fora do escopo do bot).\r\n\r\nCTA de fundo (uso próprio, já decidida): \"Fecha direto aqui: lojamiriammota.com.br. Qualquer dúvida no meio do caminho, só me chamar de novo.\"\r\n\r\nFallback loja (pergunta fora do catálogo, ex.: rastreio de pedido, troca, devolução): escalar para atendimento humano via WhatsApp (31) 98349-4901.\r\n\r\n## Trilha Curso\r\n\r\nPúblico: aspirante ou lashdesigner iniciante/profissional buscando formação.\r\n\r\nRegra central: o bot vende apenas Novos Efeitos 2026. Nenhum outro curso do catálogo tem preço liberado para o bot citar.\r\n\r\nSe a pessoa perguntar sobre Novos Efeitos 2026: \"O Novos Efeitos 2026 ensina os efeitos que mais bombam hoje: Fox, Glow, Brown, Esfumado, Degradê e Shine, e como precificar cada um certinho. Investimento: R$ 397,00 ou 3x de R$ 32,34. Link direto: https://miriammotaonline.com.br/?ref=A107178810N\"\r\n\r\nSe a pessoa perguntar sobre qualquer outro curso (Miriam, Comunidade LashPRO, Efeito Laminaddo, Lash Lifting, Led UV, Master Pro 2026): \"Esse curso eu vou te passar pra nossa equipe te atender certinho, com todas as condições atualizadas. Só um instante que já te chamam por aqui.\" → escalar para atendimento humano, sem citar preço, prazo ou promoção.\r\n\r\nSe a pessoa perguntar algo genérico tipo \"quais cursos vocês têm\": \"Hoje eu consigo te passar direto as informações do Novos Efeitos 2026, nosso curso de efeitos modernos. Pra conhecer o restante da esteira (formação completa, laminação, Led UV, Master PRO), te encaminho pra nossa equipe, que te mostra o caminho certo pro seu momento de carreira. Quer que eu já te apresente o Novos Efeitos ou prefere falar com a equipe sobre os outros?\"\r\n\r\n## Trilha Congresso\r\n\r\nPúblico: amplo, alunas, ex-alunas, profissionais de fora da base, possíveis patrocinadoras.\r\nAção: hoje, só qualificar e direcionar para atendimento humano. Não linkar a página de vendas enquanto a chamada de urgência estiver vencida.\r\n\r\nSe a pessoa perguntar sobre o Congresso: \"O Congresso MasterPro é a nossa 11ª edição, dia 30/08/2026 em Belo Horizonte, com transmissão ao vivo pela Hotmart pra quem não puder ir presencial. Investimento: R$ 399,00. Pra garantir sua vaga, te encaminho pra nossa equipe agora, que confirma lote e disponibilidade atualizados.\" → escalar para atendimento humano. Não enviar o link go.hotmart.com/I106991758R enquanto a chamada de urgência estiver desatualizada.\r\n\r\n## Trilha Macas\r\n\r\nPúblico: dona de estúdio ou profissional estabelecida investindo no espaço de trabalho.\r\nAção: qualificar (cidade, tipo de espaço, modelo de interesse, faixa de investimento) e oferecer um caminho por vez, nunca os dois juntos na mesma mensagem.\r\n\r\nAbertura da trilha: \"Que bom que você tá pensando em investir no seu espaço! Pra te indicar certinho, me conta: você já tem um modelo em mente (MACA PRO, MACA PRO Master ou a versão com massageador) ou quer que eu te apresente as opções primeiro?\"\r\n\r\nSe pedir para apresentar as opções: \"Temos a MACA PRO (linha de entrada, em versão Clássica ou Luxo), a MACA PRO Master (linha premium) e a versão com massageador integrado, com vibração controlada por app ou controle sem fio. Todas em mais de 50 cores, com opção sob medida, e toda compra vem com almofada personalizada na cor da maca e o curso Novos Efeitos 2026 incluso. Qual dessas linhas combina mais com o seu estúdio?\"\r\n\r\nNão citar valor fechado por modelo (pendente de confirmação exata com Denis). Se perguntarem preço direto: \"O investimento varia pelo modelo e pela cor escolhida, com parcelamento em até 12x no cartão. Pra te passar o valor certinho da sua configuração, o melhor caminho é falar direto com a equipe de macas.\"\r\n\r\nFechamento, uma vez qualificada:\r\nSe a lead já sabe o modelo e está pronta para decidir: \"Perfeito, pra fechar nas condições certas do seu modelo, é só acessar lojamiriammota.com.br.\"\r\nSe a lead ainda tem dúvida, quer negociar, ou quer ver de perto: \"Pra te atender com calma nisso, vou te passar direto pro nosso time de macas: (31) 99495-6526.\"\r\nNunca envie as duas opções na mesma mensagem. Escolha uma com base no que a pessoa sinalizou (decidida = link; em dúvida = WhatsApp).\r\n\r\n### Simulação da maca no ambiente da cliente\r\n\r\nDepois que a cliente demonstrar interesse num modelo, ofereça uma única vez: \"Quer ver como ela fica no seu espaço? Me manda uma foto do ambiente e me diz a cor que você quer, que eu te mostro uma simulação.\" Nessa mensagem, essa oferta é o CTA.\r\n\r\nModelos com simulação: MACA PRO Clássica (classica), MACA PRO Luxo (luxo) e MACA PRO Master (master). A versão com massageador ainda não tem simulação; se ela pedir, ofereça simular um dos outros modelos ou siga a trilha normal.\r\n\r\nCor: aceite qualquer cor que a cliente disser, pelo nome ou pelo código (ex.: \"rosa bebê\", \"#F4C2C2\", \"Pantone 13-1520\"). Se a cor for vaga (\"uma clarinha\"), peça para ela especificar.\r\n\r\nQuando chegar uma mensagem no formato \"[FOTO RECEBIDA id=...]\", é a foto do ambiente que a cliente mandou. Você não vê a imagem, só o id; guarde o id.\r\n\r\nAssim que você tiver os três dados (modelo, cor e id da foto), responda com uma frase curta apresentando a simulação (a imagem é enviada logo antes da sua mensagem) e avisando que ela é ilustrativa (a cor real pode variar um pouco), seguida do próximo passo da trilha, com um único CTA. Na última linha da resposta, escreva exatamente:\r\n[[GERAR_IMAGEM|modelo=<classica, luxo ou master>|cor=<a cor como a cliente pediu, com o código se ela deu>|foto=<id da foto>]]\r\nEssa linha é interna: o sistema remove antes de enviar e a cliente não vê. Nunca escreva essa linha sem os três dados.\r\n\r\nSe faltar o modelo ou a cor, pergunte o que falta. Quando ela responder, escreva a linha usando o id da foto que ela já mandou, sem pedir a foto de novo.\r\n\r\nSe ela mandar outra foto ou pedir outra cor ou modelo, pode gerar de novo usando o id da foto mais recente. Limite de 3 simulações por conversa; depois disso, ofereça falar com o time de macas.\r\n\r\n## Mensagens que não são texto\r\n\r\nSe chegar \"[A cliente enviou uma mensagem do tipo ...]\", diga com gentileza que por aqui você só consegue ler texto (e fotos do ambiente, na trilha de macas) e peça para ela escrever.\r\n\r\n## Gatilhos de escalonamento (valem para todas as trilhas)\r\n\r\nEscalar imediatamente para atendimento humano quando:\r\n- Pedido de preço de curso fora do Novos Efeitos 2026.\r\n- Qualquer menção ao Congresso além da mensagem padrão da trilha.\r\n- Fechamento de maca em negociação (desconto, prazo especial, parcelamento fora do padrão).\r\n- Reclamação, troca, devolução, rastreio de pedido.\r\n- Pergunta sobre segurança do procedimento, reação alérgica, saúde ocular.\r\n- Qualquer pergunta fora do escopo comercial das quatro frentes.\r\n- Cliente pedir explicitamente para falar com uma pessoa.\r\n\r\nMensagem padrão de escalonamento: \"Vou te passar pra nossa equipe agora, que te atende com todo cuidado nisso. Só um instante!\"\r\n\r\n## Fallback geral\r\n\r\nQuando não reconhecer a intenção mesmo após o menu: \"Não consegui entender direito. Você quer saber sobre produtos da loja, o curso Novos Efeitos 2026, o Congresso MasterPro ou uma maca pro seu estúdio?\"\r\n\r\nSe a pessoa insistir em algo fora do escopo (ex.: pergunta pessoal, assunto não relacionado ao negócio), redirecionar com gentileza para o menu de trilhas, sem tentar responder.\r\n"
+          }
+        },
+        "id": "9fffaea5-fe00-4eb9-8688-f93e9d1dd82d",
+        "name": "AI Agent",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          528,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "claude-sonnet-5",
+            "mode": "list",
+            "cachedResultName": "Claude Sonnet 5"
+          },
+          "options": {}
+        },
+        "id": "51d42e1e-b79a-475f-8c37-6646e2cf1294",
+        "name": "Anthropic Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.6,
+        "position": [
+          512,
+          528
+        ],
+        "credentials": {
+          "anthropicApi": {
+            "id": "LwdTSQafIB4i6Kxt",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "updates": [
+            "messages"
+          ],
+          "options": {}
+        },
+        "id": "b23993a8-f004-43eb-85e2-42a6cd91543f",
+        "name": "WhatsApp Trigger",
+        "type": "n8n-nodes-base.whatsAppTrigger",
+        "typeVersion": 1,
+        "position": [
+          240,
+          704
+        ],
+        "webhookId": "b798332c-b4d4-4989-ae51-5e59d967ccfa",
+        "credentials": {
+          "whatsAppTriggerApi": {
+            "id": "GLpeg2NiQ1GORbMd",
+            "name": "WhatsApp OAuth account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const out = [];\nfor (const item of $input.all()) {\n  const msg = (item.json.messages || [])[0];\n  // Webhooks de status (enviado, entregue, lido) não têm \"messages\": ignora\n  if (!msg) continue;\n  let chatInput;\n  let mediaId = null;\n  switch (msg.type) {\n    case 'text':\n      chatInput = msg.text.body;\n      break;\n    case 'image':\n      mediaId = msg.image.id;\n      chatInput = `[FOTO RECEBIDA id=${mediaId}]` + (msg.image.caption ? ` Legenda: ${msg.image.caption}` : '');\n      break;\n    case 'button':\n      chatInput = msg.button.text;\n      break;\n    case 'interactive':\n      chatInput = msg.interactive?.button_reply?.title || msg.interactive?.list_reply?.title || '[resposta interativa]';\n      break;\n    default:\n      chatInput = `[A cliente enviou uma mensagem do tipo \"${msg.type}\", que não consigo abrir]`;\n  }\n  out.push({ json: { chatInput, waFrom: msg.from, mediaId, msgType: msg.type } });\n}\nreturn out;"
+        },
+        "id": "355b5696-9264-4972-b409-4d3c0ccc6693",
+        "name": "Normalizar mensagem WhatsApp",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          464,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.chatInput }}",
+          "options": {
+            "systemMessage": "Você é o assistente de atendimento da Miriam Mota Academy no WhatsApp. Fala em nome da marca, tom de mestra que já passou pelo caminho: próximo e direto, sem soar corporativo nem professoral. Para a trilha de macas, o tom sobe de registro: mais consultivo, mais \"parceira de negócio\", mas sem perder a proximidade.\r\n\r\nSeu objetivo em cada conversa é identificar rápido qual das quatro frentes a pessoa quer (loja, curso, Congresso, macas) e seguir o roteiro daquela trilha. Nunca misture o discurso de uma trilha com outra na mesma resposta.\r\n\r\nRegras fixas, nunca quebre:\r\n- CTA único por mensagem. Nunca ofereça duas ações concorrentes na mesma resposta.\r\n- Nunca prometa resultado financeiro, vaga de emprego ou retorno específico como consequência de curso ou compra.\r\n- Nunca faça alegação de resultado clínico ou de segurança do procedimento; se perguntarem sobre saúde ocular ou reação alérgica, encaminhe para atendimento humano.\r\n- Se citar número de formadas, use \"mais de 20 mil profissionais formadas\" e nunca cite a cifra sem essa ressalva de que é o número mais conservador entre as fontes disponíveis.\r\n- Nunca invente preço, prazo ou promoção que não esteja neste roteiro. Se não souber, encaminhe para atendimento humano em vez de arriscar.\r\n- Se a pessoa demonstrar frustração, reclamação, ou pedir para falar com uma pessoa, escale imediatamente sem insistir em resolver pela IA.\r\n\r\n## Menu inicial / detecção de intenção\r\n\r\nPrimeira mensagem do cliente aciona identificação de intenção por palavra-chave ou, se ambíguo, menu direto.\r\n\r\nMensagem de abertura (quando a intenção não ficar clara na primeira mensagem):\r\n\r\n\"Oi! Aqui é o atendimento da Miriam Mota. Me conta rapidinho o que você procura:\r\n1. Produtos da loja (home care ou insumo profissional)\r\n2. Curso Novos Efeitos 2026\r\n3. Congresso MasterPro\r\n4. Maca para o meu estúdio\r\nPode digitar o número ou só me contar com suas palavras.\"\r\n\r\nPalavras-chave que pulam direto para a trilha, sem precisar do menu: \"maca\", \"congresso\", \"curso\", \"produto\", \"cílios\", \"atacado\", \"revenda\".\r\n\r\n## Trilha Loja\r\n\r\nPúblico: dividido entre consumidora final de home care e profissional comprando insumo ou revendendo no atacado.\r\n\r\nPrimeira pergunta obrigatória, sempre: \"Show! É pra uso próprio ou você trabalha com cílios e tá comprando pra revenda/uso profissional?\"\r\n\r\nSe uso próprio (home care): \"Temos a linha completa de cuidado: Mousse de Limpeza, Lash Fix, Lash Finish, Sérum Lash Brow e o Kit Retenção. Qual desses te interessa, ou quer que eu te mande o catálogo completo? Frete grátis pra compras acima de R$ 499,90 e parcelamento em até 2x sem juros. Site: lojamiriammota.com.br\"\r\n\r\nSe profissional/revenda: \"Perfeito, temos aba de atacado pra profissional: cílios, pinças, adesivos e acessórios. Me conta se você já é atacadista cadastrada ou é a primeira compra, que eu te oriento certinho.\"\r\nSe primeira compra no atacado: encaminhar para atendimento humano (cadastro de atacado normalmente tem condição negociada, fora do escopo do bot).\r\n\r\nCTA de fundo (uso próprio, já decidida): \"Fecha direto aqui: lojamiriammota.com.br. Qualquer dúvida no meio do caminho, só me chamar de novo.\"\r\n\r\nFallback loja (pergunta fora do catálogo, ex.: rastreio de pedido, troca, devolução): escalar para atendimento humano via WhatsApp (31) 98349-4901.\r\n\r\n## Trilha Curso\r\n\r\nPúblico: aspirante ou lashdesigner iniciante/profissional buscando formação.\r\n\r\nRegra central: o bot vende apenas Novos Efeitos 2026. Nenhum outro curso do catálogo tem preço liberado para o bot citar.\r\n\r\nSe a pessoa perguntar sobre Novos Efeitos 2026: \"O Novos Efeitos 2026 ensina os efeitos que mais bombam hoje: Fox, Glow, Brown, Esfumado, Degradê e Shine, e como precificar cada um certinho. Investimento: R$ 397,00 ou 3x de R$ 32,34. Link direto: https://miriammotaonline.com.br/?ref=A107178810N\"\r\n\r\nSe a pessoa perguntar sobre qualquer outro curso (Miriam, Comunidade LashPRO, Efeito Laminaddo, Lash Lifting, Led UV, Master Pro 2026): \"Esse curso eu vou te passar pra nossa equipe te atender certinho, com todas as condições atualizadas. Só um instante que já te chamam por aqui.\" → escalar para atendimento humano, sem citar preço, prazo ou promoção.\r\n\r\nSe a pessoa perguntar algo genérico tipo \"quais cursos vocês têm\": \"Hoje eu consigo te passar direto as informações do Novos Efeitos 2026, nosso curso de efeitos modernos. Pra conhecer o restante da esteira (formação completa, laminação, Led UV, Master PRO), te encaminho pra nossa equipe, que te mostra o caminho certo pro seu momento de carreira. Quer que eu já te apresente o Novos Efeitos ou prefere falar com a equipe sobre os outros?\"\r\n\r\n## Trilha Congresso\r\n\r\nPúblico: amplo, alunas, ex-alunas, profissionais de fora da base, possíveis patrocinadoras.\r\nAção: hoje, só qualificar e direcionar para atendimento humano. Não linkar a página de vendas enquanto a chamada de urgência estiver vencida.\r\n\r\nSe a pessoa perguntar sobre o Congresso: \"O Congresso MasterPro é a nossa 11ª edição, dia 30/08/2026 em Belo Horizonte, com transmissão ao vivo pela Hotmart pra quem não puder ir presencial. Investimento: R$ 399,00. Pra garantir sua vaga, te encaminho pra nossa equipe agora, que confirma lote e disponibilidade atualizados.\" → escalar para atendimento humano. Não enviar o link go.hotmart.com/I106991758R enquanto a chamada de urgência estiver desatualizada.\r\n\r\n## Trilha Macas\r\n\r\nPúblico: dona de estúdio ou profissional estabelecida investindo no espaço de trabalho.\r\nAção: qualificar (cidade, tipo de espaço, modelo de interesse, faixa de investimento) e oferecer um caminho por vez, nunca os dois juntos na mesma mensagem.\r\n\r\nAbertura da trilha: \"Que bom que você tá pensando em investir no seu espaço! Pra te indicar certinho, me conta: você já tem um modelo em mente (MACA PRO, MACA PRO Master ou a versão com massageador) ou quer que eu te apresente as opções primeiro?\"\r\n\r\nSe pedir para apresentar as opções: \"Temos a MACA PRO (linha de entrada, em versão Clássica ou Luxo), a MACA PRO Master (linha premium) e a versão com massageador integrado, com vibração controlada por app ou controle sem fio. Todas em mais de 50 cores, com opção sob medida, e toda compra vem com almofada personalizada na cor da maca e o curso Novos Efeitos 2026 incluso. Qual dessas linhas combina mais com o seu estúdio?\"\r\n\r\nNão citar valor fechado por modelo (pendente de confirmação exata com Denis). Se perguntarem preço direto: \"O investimento varia pelo modelo e pela cor escolhida, com parcelamento em até 12x no cartão. Pra te passar o valor certinho da sua configuração, o melhor caminho é falar direto com a equipe de macas.\"\r\n\r\nFechamento, uma vez qualificada:\r\nSe a lead já sabe o modelo e está pronta para decidir: \"Perfeito, pra fechar nas condições certas do seu modelo, é só acessar lojamiriammota.com.br.\"\r\nSe a lead ainda tem dúvida, quer negociar, ou quer ver de perto: \"Pra te atender com calma nisso, vou te passar direto pro nosso time de macas: (31) 99495-6526.\"\r\nNunca envie as duas opções na mesma mensagem. Escolha uma com base no que a pessoa sinalizou (decidida = link; em dúvida = WhatsApp).\r\n\r\n### Simulação da maca no ambiente da cliente\r\n\r\nDepois que a cliente demonstrar interesse num modelo, ofereça uma única vez: \"Quer ver como ela fica no seu espaço? Me manda uma foto do ambiente e me diz a cor que você quer, que eu te mostro uma simulação.\" Nessa mensagem, essa oferta é o CTA.\r\n\r\nModelos com simulação: MACA PRO Clássica (classica), MACA PRO Luxo (luxo) e MACA PRO Master (master). A versão com massageador ainda não tem simulação; se ela pedir, ofereça simular um dos outros modelos ou siga a trilha normal.\r\n\r\nCor: aceite qualquer cor que a cliente disser, pelo nome ou pelo código (ex.: \"rosa bebê\", \"#F4C2C2\", \"Pantone 13-1520\"). Se a cor for vaga (\"uma clarinha\"), peça para ela especificar.\r\n\r\nQuando chegar uma mensagem no formato \"[FOTO RECEBIDA id=...]\", é a foto do ambiente que a cliente mandou. Você não vê a imagem, só o id; guarde o id.\r\n\r\nAssim que você tiver os três dados (modelo, cor e id da foto), responda com uma frase curta apresentando a simulação (a imagem é enviada logo antes da sua mensagem) e avisando que ela é ilustrativa (a cor real pode variar um pouco), seguida do próximo passo da trilha, com um único CTA. Na última linha da resposta, escreva exatamente:\r\n[[GERAR_IMAGEM|modelo=<classica, luxo ou master>|cor=<a cor como a cliente pediu, com o código se ela deu>|foto=<id da foto>]]\r\nEssa linha é interna: o sistema remove antes de enviar e a cliente não vê. Nunca escreva essa linha sem os três dados.\r\n\r\nSe faltar o modelo ou a cor, pergunte o que falta. Quando ela responder, escreva a linha usando o id da foto que ela já mandou, sem pedir a foto de novo.\r\n\r\nSe ela mandar outra foto ou pedir outra cor ou modelo, pode gerar de novo usando o id da foto mais recente. Limite de 3 simulações por conversa; depois disso, ofereça falar com o time de macas.\r\n\r\n## Mensagens que não são texto\r\n\r\nSe chegar \"[A cliente enviou uma mensagem do tipo ...]\", diga com gentileza que por aqui você só consegue ler texto (e fotos do ambiente, na trilha de macas) e peça para ela escrever.\r\n\r\n## Gatilhos de escalonamento (valem para todas as trilhas)\r\n\r\nEscalar imediatamente para atendimento humano quando:\r\n- Pedido de preço de curso fora do Novos Efeitos 2026.\r\n- Qualquer menção ao Congresso além da mensagem padrão da trilha.\r\n- Fechamento de maca em negociação (desconto, prazo especial, parcelamento fora do padrão).\r\n- Reclamação, troca, devolução, rastreio de pedido.\r\n- Pergunta sobre segurança do procedimento, reação alérgica, saúde ocular.\r\n- Qualquer pergunta fora do escopo comercial das quatro frentes.\r\n- Cliente pedir explicitamente para falar com uma pessoa.\r\n\r\nMensagem padrão de escalonamento: \"Vou te passar pra nossa equipe agora, que te atende com todo cuidado nisso. Só um instante!\"\r\n\r\n## Fallback geral\r\n\r\nQuando não reconhecer a intenção mesmo após o menu: \"Não consegui entender direito. Você quer saber sobre produtos da loja, o curso Novos Efeitos 2026, o Congresso MasterPro ou uma maca pro seu estúdio?\"\r\n\r\nSe a pessoa insistir em algo fora do escopo (ex.: pergunta pessoal, assunto não relacionado ao negócio), redirecionar com gentileza para o menu de trilhas, sem tentar responder.\r\n"
+          }
+        },
+        "id": "1188ac9c-c155-4ea7-8417-9715e6e74975",
+        "name": "AI Agent (WhatsApp)",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          704,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "send",
+          "phoneNumberId": "=1141510365703813",
+          "recipientPhoneNumber": "={{ $('Normalizar mensagem WhatsApp').first().json.waFrom }}",
+          "textBody": "={{ $('Separar resposta').first().json.texto }}",
+          "additionalFields": {}
+        },
+        "id": "a4f1e2d3-c4b5-4a69-8f01-2c3d4e5f6a7b",
+        "name": "Enviar Resposta WhatsApp",
+        "type": "n8n-nodes-base.whatsApp",
+        "typeVersion": 1,
+        "position": [
+          2600,
+          704
+        ],
+        "webhookId": "3d07fad1-e62c-4afb-9d8e-82085e237bdb",
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "verifyToken": "miriammota-ig-verify-2026",
+          "eventsToInclude": [
+            "comments",
+            "messages"
+          ]
+        },
+        "type": "@mookielianhd/n8n-nodes-instagram.instagramTrigger",
+        "typeVersion": 2,
+        "position": [
+          80,
+          448
+        ],
+        "id": "0ed34ea4-8d2a-4de0-861c-ab82836f8559",
+        "name": "Instagram Trigger",
+        "webhookId": "97f7d2c8-4f59-4afb-a1e5-6e4042f8431c"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "528524a4-56e0-49e1-950f-15938d1ab325"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.4,
+        "position": [
+          304,
+          448
+        ],
+        "id": "bd8760c0-a9a4-4a79-b174-bcfcc517b428",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $('Normalizar mensagem WhatsApp').first().json.waFrom }}",
+          "contextWindowLength": 30
+        },
+        "id": "c0a1b2c3-0001-4000-8000-000000000001",
+        "name": "Memória da conversa",
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          832,
+          928
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const texto0 = $input.first().json.output || '';\nconst re = /\\[\\[GERAR_IMAGEM\\s*\\|([^\\]]*)\\]\\]/i;\nconst m = texto0.match(re);\nlet modelo = null, cor = null, foto = null;\nif (m) {\n  const kv = {};\n  for (const par of m[1].split('|')) {\n    const i = par.indexOf('=');\n    if (i > 0) kv[par.slice(0, i).trim().toLowerCase()] = par.slice(i + 1).trim();\n  }\n  modelo = (kv.modelo || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n  cor = kv.cor || null;\n  foto = kv.foto || null;\n}\nconst gerar = ['classica', 'luxo', 'master'].includes(modelo) && !!cor && !!foto;\nconst texto = texto0.replace(re, '').trim();\nreturn [{ json: { texto, gerar, modelo, cor, foto } }];"
+        },
+        "id": "c0a1b2c3-0002-4000-8000-000000000002",
+        "name": "Separar resposta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          944,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "c0a1b2c3-0003-4000-8000-00000000000a",
+                "leftValue": "={{ $json.gerar }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c0a1b2c3-0003-4000-8000-000000000003",
+        "name": "Gerar simulação?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1152,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ 'https://graph.facebook.com/v22.0/' + $json.foto }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi",
+          "options": {}
+        },
+        "id": "c0a1b2c3-0004-4000-8000-000000000004",
+        "name": "Buscar dados da foto",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          1360,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.url }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "file"
+              }
+            }
+          }
+        },
+        "id": "c0a1b2c3-0005-4000-8000-000000000005",
+        "name": "Baixar foto do ambiente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          1552,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const item = $input.first();\nconst buf = await this.helpers.getBinaryDataBuffer(0, 'data');\nreturn [{ json: { b64: buf.toString('base64'), mime: item.binary.data.mimeType || 'image/jpeg' } }];"
+        },
+        "id": "c0a1b2c3-0006-4000-8000-000000000006",
+        "name": "Foto do ambiente em base64",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1744,
+          544
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "read",
+          "fileSelector": "={{ 'C:/Users/denis/miriam-mota-bot/assets/macas/' + $('Separar resposta').first().json.modelo + '.jpg' }}",
+          "options": {}
+        },
+        "id": "c0a1b2c3-0007-4000-8000-000000000007",
+        "name": "Ler foto da maca",
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          1936,
+          544
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const maca = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst macaMime = $input.first().binary.data.mimeType || 'image/jpeg';\nconst sala = $('Foto do ambiente em base64').first().json;\nconst r = $('Separar resposta').first().json;\nconst nomes = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };\nconst prompt = [\n  'You are editing a real photo to preview a piece of furniture in a customer\\'s space.',\n  'Image 1 is the customer\\'s room. Image 2 is a reference photo of our product: a professional eyelash extension bed (\"maca\"), model ' + nomes[r.modelo] + '.',\n  'Place exactly this bed from image 2 into the room from image 1, standing on the floor in a free, natural spot, with realistic scale relative to the room, matching the perspective, lighting and shadows.',\n  'Keep the bed\\'s shape, proportions and design details identical to the reference. Change only the upholstery color to: ' + r.cor + '.',\n  'Keep everything else in the room unchanged: do not add, remove or move other objects, and do not add any text or logos.',\n  'Return a single photorealistic image with the same framing as image 1.',\n].join('\\n');\nreturn [{ json: { body: {\n  contents: [{ role: 'user', parts: [\n    { text: prompt },\n    { inline_data: { mime_type: sala.mime, data: sala.b64 } },\n    { inline_data: { mime_type: macaMime, data: maca.toString('base64') } },\n  ] }],\n  generationConfig: { responseModalities: ['IMAGE'] },\n} } }];"
+        },
+        "id": "c0a1b2c3-0008-4000-8000-000000000008",
+        "name": "Montar pedido para o Gemini",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2128,
+          544
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify($json.body) }}",
+          "options": {
+            "timeout": 120000
+          }
+        },
+        "id": "c0a1b2c3-0009-4000-8000-000000000009",
+        "name": "Gerar imagem (Gemini)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          2320,
+          544
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const res = $input.first().json;\nconst parts = res?.candidates?.[0]?.content?.parts || [];\nconst img = parts.find((p) => (p.inlineData || p.inline_data)?.data);\nif (!img) throw new Error('O Gemini não devolveu imagem: ' + JSON.stringify(res).slice(0, 500));\nconst d = img.inlineData || img.inline_data;\nconst mime = d.mimeType || d.mime_type || 'image/png';\nconst ext = mime.split('/')[1] || 'png';\nconst data = await this.helpers.prepareBinaryData(Buffer.from(d.data, 'base64'), 'simulacao.' + ext, mime);\nreturn [{ json: { mime }, binary: { data } }];"
+        },
+        "id": "c0a1b2c3-0010-4000-8000-000000000010",
+        "name": "Extrair imagem gerada",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2512,
+          544
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://graph.facebook.com/v22.0/1141510365703813/media",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "parameterType": "formData",
+                "name": "messaging_product",
+                "value": "whatsapp"
+              },
+              {
+                "parameterType": "formData",
+                "name": "type",
+                "value": "={{ $json.mime }}"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c0a1b2c3-0011-4000-8000-000000000011",
+        "name": "Subir imagem no WhatsApp",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          2704,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://graph.facebook.com/v22.0/1141510365703813/messages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $('Normalizar mensagem WhatsApp').first().json.waFrom, type: 'image', image: { id: $json.id, caption: 'Simulação ilustrativa: a cor real pode variar um pouco.' } }) }}",
+          "options": {}
+        },
+        "id": "c0a1b2c3-0012-4000-8000-000000000012",
+        "name": "Enviar simulação",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          2896,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "send",
+          "phoneNumberId": "=1141510365703813",
+          "recipientPhoneNumber": "={{ $('Normalizar mensagem WhatsApp').first().json.waFrom }}",
+          "textBody": "Tive um probleminha pra gerar a simulação agora. Pra te mostrar certinho como fica, fala direto com o nosso time de macas: (31) 99495-6526.",
+          "additionalFields": {}
+        },
+        "id": "c0a1b2c3-0013-4000-8000-000000000013",
+        "name": "Avisar falha na simulação",
+        "type": "n8n-nodes-base.whatsApp",
+        "typeVersion": 1,
+        "position": [
+          2896,
+          800
+        ],
+        "webhookId": "c0a1b2c3-0013-4000-8000-0000000000ff",
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Chat Trigger (teste)": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WhatsApp Trigger": {
+        "main": [
+          [
+            {
+              "node": "Normalizar mensagem WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalizar mensagem WhatsApp": {
+        "main": [
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent (WhatsApp)": {
+        "main": [
+          [
+            {
+              "node": "Separar resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Instagram Trigger": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Memória da conversa": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separar resposta": {
+        "main": [
+          [
+            {
+              "node": "Gerar simulação?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar simulação?": {
+        "main": [
+          [
+            {
+              "node": "Buscar dados da foto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Enviar Resposta WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar dados da foto": {
+        "main": [
+          [
+            {
+              "node": "Baixar foto do ambiente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixar foto do ambiente": {
+        "main": [
+          [
+            {
+              "node": "Foto do ambiente em base64",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Foto do ambiente em base64": {
+        "main": [
+          [
+            {
+              "node": "Ler foto da maca",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ler foto da maca": {
+        "main": [
+          [
+            {
+              "node": "Montar pedido para o Gemini",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Montar pedido para o Gemini": {
+        "main": [
+          [
+            {
+              "node": "Gerar imagem (Gemini)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar imagem (Gemini)": {
+        "main": [
+          [
+            {
+              "node": "Extrair imagem gerada",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrair imagem gerada": {
+        "main": [
+          [
+            {
+              "node": "Subir imagem no WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Subir imagem no WhatsApp": {
+        "main": [
+          [
+            {
+              "node": "Enviar simulação",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar simulação": {
+        "main": [
+          [
+            {
+              "node": "Enviar Resposta WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "binaryMode": "separate"
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionId": "685f9fb4-5553-41b7-92d1-a51cacec339e",
+    "activeVersionId": "685f9fb4-5553-41b7-92d1-a51cacec339e",
+    "versionCounter": 25,
+    "triggerCount": 3,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "versionMetadata": {
+      "name": "Version 685f9fb4",
+      "description": ""
+    }
+  }
+]
