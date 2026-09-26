@@ -201,18 +201,20 @@ const sala = $('Foto do ambiente em base64').first().json;
 const r = $('Separar resposta').first().json;
 const nomes = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };
 const prompt = [
-  'You are editing a real photo to preview a piece of furniture in a customer\\'s space.',
-  'Image 1 is the customer\\'s room. Image 2 is a reference photo of our product: a professional eyelash extension bed ("maca"), model ' + nomes[r.modelo] + '.',
-  'Place exactly this bed from image 2 into the room from image 1, standing on the floor in a free, natural spot, with realistic scale relative to the room, matching the perspective, lighting and shadows.',
-  'Keep the bed\\'s shape, proportions and design details identical to the reference. Change only the upholstery color to: ' + r.cor + '.',
-  'Keep everything else in the room unchanged: do not add, remove or move other objects, and do not add any text or logos.',
-  'Return a single photorealistic image with the same framing as image 1.',
+  'Edit the CUSTOMER ROOM photo: add to it the professional eyelash extension bed ("maca", model ' + nomes[r.modelo] + ') shown in the PRODUCT REFERENCE photo.',
+  'The result must be the CUSTOMER ROOM photo: same walls, floor, furniture, lighting and framing. Never return or reuse the background of the PRODUCT REFERENCE photo.',
+  'From the PRODUCT REFERENCE, copy only the bed, with its exact design: shape, base, legs, tufting and proportions. Ignore every other object, person, wall and floor in that photo, and do not mix in details from other furniture.',
+  'Place one bed standing on the floor of the customer room, in a free and natural spot, with realistic scale, matching the room perspective, light and shadows.',
+  'Change only the upholstery color of the bed to: ' + r.cor + '.',
+  'Do not add, remove or move other objects in the room, and do not add any text or logos. Return a single photorealistic image.',
 ].join('\\n');
 return [{ json: { body: {
   contents: [{ role: 'user', parts: [
-    { text: prompt },
-    { inline_data: { mime_type: sala.mime, data: sala.b64 } },
+    { text: 'PRODUCT REFERENCE (use only the bed; ignore its background):' },
     { inline_data: { mime_type: macaMime, data: maca.toString('base64') } },
+    { text: 'CUSTOMER ROOM (the scene to edit and return):' },
+    { inline_data: { mime_type: sala.mime, data: sala.b64 } },
+    { text: prompt },
   ] }],
   generationConfig: { responseModalities: ['IMAGE'] },
 } } }];`,
@@ -240,6 +242,8 @@ return [{ json: { body: {
     type: 'n8n-nodes-base.httpRequest',
     typeVersion: 4.5,
     position: [2320, 544],
+    // Credencial "Header Auth" do n8n com x-goog-api-key (a chave fica só no n8n)
+    credentials: { httpHeaderAuth: { id: 'rfTfiWwqtSsWS7Kl', name: 'Gemini API' } },
     onError: 'continueErrorOutput',
   },
   {

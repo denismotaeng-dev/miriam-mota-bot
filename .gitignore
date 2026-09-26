@@ -10,3 +10,6 @@
 # Segredos
 .env
 .env.*
+
+# Resultado do teste de simulação
+assets/teste-simulacao.*

@@ -1,0 +1,239 @@
+[
+  {
+    "id": "TesteSimulacao01",
+    "name": "TESTE - Simulação de maca (Gemini)",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "d0000000-0000-4000-8000-000000000001",
+        "name": "Iniciar teste",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { modelo: 'luxo', cor: 'rosa bebê', foto: 'teste' } }];"
+        },
+        "id": "d0000000-0000-4000-8000-000000000002",
+        "name": "Separar resposta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "read",
+          "fileSelector": "C:/Users/denis/miriam-mota-bot/assets/macas/classica.jpg",
+          "options": {}
+        },
+        "id": "d0000000-0000-4000-8000-000000000003",
+        "name": "Ler ambiente de teste",
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const item = $input.first();\nconst buf = await this.helpers.getBinaryDataBuffer(0, 'data');\nreturn [{ json: { b64: buf.toString('base64'), mime: item.binary.data.mimeType || 'image/jpeg' } }];"
+        },
+        "id": "c0a1b2c3-0006-4000-8000-000000000006",
+        "name": "Foto do ambiente em base64",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          600,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "read",
+          "fileSelector": "={{ 'C:/Users/denis/miriam-mota-bot/assets/macas/' + $('Separar resposta').first().json.modelo + '.jpg' }}",
+          "options": {}
+        },
+        "id": "c0a1b2c3-0007-4000-8000-000000000007",
+        "name": "Ler foto da maca",
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          800,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const maca = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst macaMime = $input.first().binary.data.mimeType || 'image/jpeg';\nconst sala = $('Foto do ambiente em base64').first().json;\nconst r = $('Separar resposta').first().json;\nconst nomes = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };\nconst prompt = [\n  'Edit the CUSTOMER ROOM photo: add to it the professional eyelash extension bed (\"maca\", model ' + nomes[r.modelo] + ') shown in the PRODUCT REFERENCE photo.',\n  'The result must be the CUSTOMER ROOM photo: same walls, floor, furniture, lighting and framing. Never return or reuse the background of the PRODUCT REFERENCE photo.',\n  'From the PRODUCT REFERENCE, copy only the bed, with its exact design: shape, base, legs, tufting and proportions. Ignore every other object, person, wall and floor in that photo, and do not mix in details from other furniture.',\n  'Place one bed standing on the floor of the customer room, in a free and natural spot, with realistic scale, matching the room perspective, light and shadows.',\n  'Change only the upholstery color of the bed to: ' + r.cor + '.',\n  'Do not add, remove or move other objects in the room, and do not add any text or logos. Return a single photorealistic image.',\n].join('\\n');\nreturn [{ json: { body: {\n  contents: [{ role: 'user', parts: [\n    { text: 'PRODUCT REFERENCE (use only the bed; ignore its background):' },\n    { inline_data: { mime_type: macaMime, data: maca.toString('base64') } },\n    { text: 'CUSTOMER ROOM (the scene to edit and return):' },\n    { inline_data: { mime_type: sala.mime, data: sala.b64 } },\n    { text: prompt },\n  ] }],\n  generationConfig: { responseModalities: ['IMAGE'] },\n} } }];"
+        },
+        "id": "c0a1b2c3-0008-4000-8000-000000000008",
+        "name": "Montar pedido para o Gemini",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify($json.body) }}",
+          "options": {
+            "timeout": 120000
+          }
+        },
+        "id": "c0a1b2c3-0009-4000-8000-000000000009",
+        "name": "Gerar imagem (Gemini)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          1200,
+          0
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "rfTfiWwqtSsWS7Kl",
+            "name": "Gemini API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const res = $input.first().json;\nconst parts = res?.candidates?.[0]?.content?.parts || [];\nconst img = parts.find((p) => (p.inlineData || p.inline_data)?.data);\nif (!img) throw new Error('O Gemini não devolveu imagem: ' + JSON.stringify(res).slice(0, 500));\nconst d = img.inlineData || img.inline_data;\nconst mime = d.mimeType || d.mime_type || 'image/png';\nconst ext = mime.split('/')[1] || 'png';\nconst data = await this.helpers.prepareBinaryData(Buffer.from(d.data, 'base64'), 'simulacao.' + ext, mime);\nreturn [{ json: { mime }, binary: { data } }];"
+        },
+        "id": "c0a1b2c3-0010-4000-8000-000000000010",
+        "name": "Extrair imagem gerada",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "write",
+          "fileName": "={{ 'C:/Users/denis/miriam-mota-bot/assets/teste-simulacao.' + ($json.mime.split('/')[1] || 'png') }}",
+          "options": {}
+        },
+        "id": "d0000000-0000-4000-8000-000000000009",
+        "name": "Salvar resultado",
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          1600,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Iniciar teste": {
+        "main": [
+          [
+            {
+              "node": "Separar resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separar resposta": {
+        "main": [
+          [
+            {
+              "node": "Ler ambiente de teste",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ler ambiente de teste": {
+        "main": [
+          [
+            {
+              "node": "Foto do ambiente em base64",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Foto do ambiente em base64": {
+        "main": [
+          [
+            {
+              "node": "Ler foto da maca",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ler foto da maca": {
+        "main": [
+          [
+            {
+              "node": "Montar pedido para o Gemini",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Montar pedido para o Gemini": {
+        "main": [
+          [
+            {
+              "node": "Gerar imagem (Gemini)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar imagem (Gemini)": {
+        "main": [
+          [
+            {
+              "node": "Extrair imagem gerada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrair imagem gerada": {
+        "main": [
+          [
+            {
+              "node": "Salvar resultado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "active": false,
+    "pinData": {}
+  }
+]
