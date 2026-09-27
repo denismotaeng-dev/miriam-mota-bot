@@ -178,7 +178,7 @@ Nunca envie as duas opções na mesma mensagem. Escolha uma com base no que a pe
 
 **Simulação no ambiente da cliente (gerada com o Gemini):**
 
-Depois que a lead demonstrar interesse num modelo, o bot oferece uma vez:
+Só depois que a lead já escolheu um modelo específico e mostrou interesse real, o bot oferece uma vez:
 
 ```
 Quer ver como ela fica no seu espaço? Me manda uma foto do ambiente e me diz a cor que você quer, que eu te mostro uma simulação.
@@ -187,7 +187,7 @@ Quer ver como ela fica no seu espaço? Me manda uma foto do ambiente e me diz a 
 - Modelos com simulação: MACA PRO Clássica, MACA PRO Luxo e MACA PRO Master. A versão com massageador ainda não tem.
 - Cor livre, pelo nome ou pelo código que a cliente der.
 - Com modelo, cor e foto em mãos, o bot devolve a foto do ambiente com a maca inserida, avisa que a imagem é ilustrativa (a cor real pode variar) e segue para o próximo passo da trilha, com um único CTA.
-- Limite de 3 simulações por conversa; depois disso, o bot oferece o time de macas.
+- Limite de 1 simulação por cliente, mais 1 se ela pedir outra cor ou outro modelo (máximo 2 por conversa); depois disso, o bot passa o contato do time de macas. Cada simulação custa cerca de US$ 0,07 (gemini-3.1-flash-image).
 - Fotos de referência de cada modelo ficam em `assets/macas/` (`classica.jpg`, `luxo.jpg`, `master.jpg`).
 
 ---

@@ -42,7 +42,12 @@ const nodes = [
   copy('Foto do ambiente em base64'),
   copy('Ler foto da maca'),
   copy('Montar pedido para o Gemini'),
-  copy('Gerar imagem (Gemini)'),
+  (() => {
+    // GEMINI_MODEL=... troca o modelo só no teste (ex.: gemini-3.1-flash-lite-image)
+    const n = copy('Gerar imagem (Gemini)');
+    if (process.env.GEMINI_MODEL) n.parameters.url = n.parameters.url.replace(/models\/[^:]+:/,'models/' + process.env.GEMINI_MODEL + ':');
+    return n;
+  })(),
   copy('Extrair imagem gerada'),
   {
     parameters: {
