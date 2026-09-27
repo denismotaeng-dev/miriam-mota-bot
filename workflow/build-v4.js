@@ -23,7 +23,7 @@ const PLANILHA_PEDIDOS = '1jVlvqoQ7R0_1L2cXaKQZU1gvnsA9Oe1X4c06u67VFxc'; // Pedi
 const WHATSAPP_EQUIPE = '5531983494901'; // Andrea
 const CRED_GEMINI = { httpHeaderAuth: { id: 'rfTfiWwqtSsWS7Kl', name: 'Gemini API' } };
 // Preenchido depois que a credencial "Google Sheets" for criada no n8n (ver CLAUDE.md)
-const CRED_SHEETS = { googleSheetsOAuth2Api: { id: process.env.CRED_SHEETS_ID || 'PREENCHER', name: 'Google Sheets' } };
+const CRED_SHEETS = { googleSheetsOAuth2Api: { id: process.env.CRED_SHEETS_ID || 'MCuPkrxMNpgKsmI1', name: 'Google Sheets' } };
 const FALLBACK_SIMULACAO =
   'Tive um probleminha pra gerar a simulação agora. Pra te mostrar certinho como fica, fala direto com o nosso time de macas: (31) 99495-6526.';
 
