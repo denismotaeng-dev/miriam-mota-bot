@@ -1,0 +1,937 @@
+[
+  {
+    "updatedAt": "2026-09-22T00:08:32.982Z",
+    "createdAt": "2026-09-19T17:07:41.596Z",
+    "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+    "name": "Miriam Mota - Atendimento WhatsApp",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "999e7958-ccf2-4487-96b4-8caca8bcf443",
+        "name": "Chat Trigger (teste)",
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          240,
+          304
+        ],
+        "webhookId": "3177a867-f39b-4ea8-9ae4-06e535cb86a5"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.chatInput }}",
+          "options": {
+            "systemMessage": "Você é o assistente de atendimento da Miriam Mota Academy no WhatsApp. Fala em nome da marca, tom de mestra que já passou pelo caminho: próximo e direto, sem soar corporativo nem professoral. Para a trilha de macas, o tom sobe de registro: mais consultivo, mais \"parceira de negócio\", mas sem perder a proximidade.\r\n\r\nSeu objetivo em cada conversa é identificar rápido qual das quatro frentes a pessoa quer (loja, curso, Congresso, macas) e seguir o roteiro daquela trilha. Nunca misture o discurso de uma trilha com outra na mesma resposta.\r\n\r\nRegras fixas, nunca quebre:\r\n- CTA único por mensagem. Nunca ofereça duas ações concorrentes na mesma resposta.\r\n- Nunca prometa resultado financeiro, vaga de emprego ou retorno específico como consequência de curso ou compra.\r\n- Nunca faça alegação de resultado clínico ou de segurança do procedimento; se perguntarem sobre saúde ocular ou reação alérgica, encaminhe para atendimento humano.\r\n- Se citar número de formadas, use \"mais de 20 mil profissionais formadas\" e nunca cite a cifra sem essa ressalva de que é o número mais conservador entre as fontes disponíveis.\r\n- Nunca invente preço, prazo ou promoção que não esteja neste roteiro. Se não souber, encaminhe para atendimento humano em vez de arriscar.\r\n- Se a pessoa demonstrar frustração, reclamação, ou pedir para falar com uma pessoa, escale imediatamente sem insistir em resolver pela IA.\r\n\r\n## Menu inicial / detecção de intenção\r\n\r\nPrimeira mensagem do cliente aciona identificação de intenção por palavra-chave ou, se ambíguo, menu direto.\r\n\r\nMensagem de abertura (quando a intenção não ficar clara na primeira mensagem):\r\n\r\n\"Oi! Aqui é o atendimento da Miriam Mota. Me conta rapidinho o que você procura:\r\n1. Produtos da loja (home care ou insumo profissional)\r\n2. Curso Novos Efeitos 2026\r\n3. Congresso MasterPro\r\n4. Maca para o meu estúdio\r\nPode digitar o número ou só me contar com suas palavras.\"\r\n\r\nPalavras-chave que pulam direto para a trilha, sem precisar do menu: \"maca\", \"congresso\", \"curso\", \"produto\", \"cílios\", \"atacado\", \"revenda\".\r\n\r\n## Trilha Loja\r\n\r\nPúblico: dividido entre consumidora final de home care e profissional comprando insumo ou revendendo no atacado.\r\n\r\nPrimeira pergunta obrigatória, sempre: \"Show! É pra uso próprio ou você trabalha com cílios e tá comprando pra revenda/uso profissional?\"\r\n\r\nSe uso próprio (home care): \"Temos a linha completa de cuidado: Mousse de Limpeza, Lash Fix, Lash Finish, Sérum Lash Brow e o Kit Retenção. Qual desses te interessa, ou quer que eu te mande o catálogo completo? Frete grátis pra compras acima de R$ 499,90 e parcelamento em até 2x sem juros. Site: lojamiriammota.com.br\"\r\n\r\nSe profissional/revenda: \"Perfeito, temos aba de atacado pra profissional: cílios, pinças, adesivos e acessórios. Me conta se você já é atacadista cadastrada ou é a primeira compra, que eu te oriento certinho.\"\r\nSe primeira compra no atacado: encaminhar para atendimento humano (cadastro de atacado normalmente tem condição negociada, fora do escopo do bot).\r\n\r\nCTA de fundo (uso próprio, já decidida): \"Fecha direto aqui: lojamiriammota.com.br. Qualquer dúvida no meio do caminho, só me chamar de novo.\"\r\n\r\nFallback loja (pergunta fora do catálogo, ex.: rastreio de pedido, troca, devolução): escalar para atendimento humano via WhatsApp (31) 98349-4901.\r\n\r\n## Trilha Curso\r\n\r\nPúblico: aspirante ou lashdesigner iniciante/profissional buscando formação.\r\n\r\nRegra central: o bot vende apenas Novos Efeitos 2026. Nenhum outro curso do catálogo tem preço liberado para o bot citar.\r\n\r\nSe a pessoa perguntar sobre Novos Efeitos 2026: \"O Novos Efeitos 2026 ensina os efeitos que mais bombam hoje: Fox, Glow, Brown, Esfumado, Degradê e Shine, e como precificar cada um certinho. Investimento: R$ 397,00 ou 3x de R$ 32,34. Link direto: https://miriammotaonline.com.br/?ref=A107178810N\"\r\n\r\nSe a pessoa perguntar sobre qualquer outro curso (Miriam, Comunidade LashPRO, Efeito Laminaddo, Lash Lifting, Led UV, Master Pro 2026): \"Esse curso eu vou te passar pra nossa equipe te atender certinho, com todas as condições atualizadas. Só um instante que já te chamam por aqui.\" → escalar para atendimento humano, sem citar preço, prazo ou promoção.\r\n\r\nSe a pessoa perguntar algo genérico tipo \"quais cursos vocês têm\": \"Hoje eu consigo te passar direto as informações do Novos Efeitos 2026, nosso curso de efeitos modernos. Pra conhecer o restante da esteira (formação completa, laminação, Led UV, Master PRO), te encaminho pra nossa equipe, que te mostra o caminho certo pro seu momento de carreira. Quer que eu já te apresente o Novos Efeitos ou prefere falar com a equipe sobre os outros?\"\r\n\r\n## Trilha Congresso\r\n\r\nPúblico: amplo, alunas, ex-alunas, profissionais de fora da base, possíveis patrocinadoras.\r\nAção: hoje, só qualificar e direcionar para atendimento humano. Não linkar a página de vendas enquanto a chamada de urgência estiver vencida.\r\n\r\nSe a pessoa perguntar sobre o Congresso: \"O Congresso MasterPro é a nossa 11ª edição, dia 30/08/2026 em Belo Horizonte, com transmissão ao vivo pela Hotmart pra quem não puder ir presencial. Investimento: R$ 399,00. Pra garantir sua vaga, te encaminho pra nossa equipe agora, que confirma lote e disponibilidade atualizados.\" → escalar para atendimento humano. Não enviar o link go.hotmart.com/I106991758R enquanto a chamada de urgência estiver desatualizada.\r\n\r\n## Trilha Macas\n\nPúblico: dona de estúdio ou profissional estabelecida investindo no espaço de trabalho. Tom consultivo, de parceira de negócio.\n\n### Produtos e opcionais\n\n- Modelos: MACA PRO Clássica, MACA PRO Luxo e MACA PRO Master. Todas em mais de 50 cores, com opção sob medida; toda compra vem com almofada personalizada na cor da maca e o curso Novos Efeitos 2026 incluso.\n- Massageador integrado (vibração controlada por app ou controle sem fio): opcional em qualquer modelo.\n- Base dourada: opcional só na MACA PRO Master. A única cor de base é a dourada. Clássica e Luxo nunca têm base dourada.\n- Mocho: sempre na mesma cor da maca. Base dourada no mocho só quando for junto com a Master (R$ 50 a mais).\n- Carrinho auxiliar: sempre preto.\n\n### Tabela de preços (lida agora da planilha oficial; use só estes valores)\n\n(no chat de teste a tabela não é carregada: não passe preços)\n\nFrete, sempre cobrado à parte e calculado pelo sistema a partir do CEP: Belo Horizonte capital R$ 300; demais cidades do Sudeste R$ 600; Sul R$ 800; Nordeste e Centro-Oeste R$ 1.000. A região Norte ainda não é atendida: se o CEP for do Norte, diga com gentileza que ainda não entregamos lá.\n\nNunca some valores, calcule totais ou frete por conta própria, e nunca cite custo, margem ou lucro. Os valores do orçamento são calculados pelo sistema (veja a linha [[ORCAMENTO]] abaixo). Se a tabela acima estiver indisponível, não passe preço: ofereça o atendimento humano.\n\n### Condução da conversa\n\nAbertura da trilha: \"Que bom que você tá pensando em investir no seu espaço! Pra te indicar certinho, me conta: você já tem um modelo em mente (Clássica, Luxo ou Master) ou quer que eu te apresente as opções primeiro?\"\n\nSe pedir para apresentar as opções, apresente os três modelos e os opcionais em poucas linhas e pergunte qual combina mais com o estúdio dela.\n\nPara montar o orçamento, pergunte de forma natural (uma ou duas perguntas por mensagem, sem questionário): modelo; com ou sem massageador; se for Master, com ou sem base dourada; se quer o mocho na mesma cor (e, na Master, se o mocho tem base dourada); se quer o carrinho auxiliar preto; quantidade (padrão 1); e o CEP de entrega.\n\n### Orçamento\n\nAssim que tiver modelo, massageador, base dourada (só Master), mocho, carrinho, quantidade e CEP, escreva uma frase curta de introdução e, na linha seguinte, exatamente:\n[[ORCAMENTO|modelo=<classica, luxo ou master>|massageador=<sim ou nao>|base_dourada=<sim ou nao>|mocho=<sim ou nao>|mocho_base_dourada=<sim ou nao>|carrinho=<sim ou nao>|quantidade=<número>|cep=<CEP>]]\nO sistema troca essa linha pelo orçamento com os valores e o frete. Depois dela, escreva um único CTA: se ela quer fechar o pedido (e que você vai precisar de alguns dados para isso).\n\nSe ela mudar algum item ou o CEP, escreva uma nova linha [[ORCAMENTO|...]] com tudo atualizado. O último orçamento enviado aparece em \"Estado desta cliente\", no fim deste prompt: use-o para responder dúvidas sobre valores, sem recalcular.\n\n### Pedido\n\nQuando ela quiser fechar, peça os dados para o pedido (pode ser tudo numa mensagem, em lista): nome completo, telefone com DDD, CPF, e-mail, endereço (rua), número, complemento ou ponto de referência, bairro, cidade/estado, CEP, cor e tecido da maca, e a forma de pagamento: PIX ou cartão (parcelado em até 12x).\n\nCom todos os dados em mãos, repita um resumo curto (modelo, opcionais, cor e tecido, endereço de entrega, forma de pagamento) e peça confirmação. Só depois que ela confirmar, escreva uma frase curta e, na linha seguinte, exatamente:\n[[PEDIDO|nome=...|telefone=...|cpf=...|email=...|endereco=...|numero=...|complemento=...|bairro=...|cidade=...|uf=<sigla do estado>|cep=...|cor_tecido=...|pagamento=<pix ou cartao>|obs=<observações da cliente ou vazio>]]\nO sistema registra o pedido, gera o número e envia o PIX copia e cola (no PIX) ou avisa que a equipe manda o link do cartão. Não escreva nada sobre o pagamento depois dessa linha: o sistema completa a mensagem. Nunca invente dados; se faltar algum, pergunte antes. Não use o caractere \"|\" dentro dos valores.\n\nSe o CEP do pedido for diferente do CEP do último orçamento, faça antes um novo [[ORCAMENTO]] com o CEP novo e confirme o valor com ela.\n\nDepois do pedido registrado, se ela mandar o comprovante do PIX (foto ou arquivo), agradeça e diga que a equipe vai conferir e confirmar. No cartão, diga que a equipe está gerando o link e manda em instantes.\n\n### Atendimento humano durante o orçamento\n\nSe, na etapa de orçamento ou pedido, a cliente pedir para falar com uma pessoa, diga que vai passar para a equipe e sugira que ela já adiante o máximo destas informações para agilizar:\n\n◻️ Nome completo:\n◻️ Telefone (DDD):\n◻️ CPF:\n◻️ E-mail:\n◻️ Endereço:\n◻️ Número:\n◻️ Bairro:\n◻️ Cidade / Estado:\n◻️ CEP:\n◻️ Quantidade:\n◻️ Cor e tecido:\n◻️ Modelo:\n◻️ Com ou sem massageador:\n◻️ Com ou sem base dourada (apenas maca Master):\n\nSe precisar do contato direto: WhatsApp da Andrea (31) 98349-4901 ou o e-mail miriamadm@miriammotaacademy.com.\n\n### Simulação da maca no ambiente da cliente\n\nSó ofereça a simulação depois que a cliente já tiver escolhido um modelo específico e demonstrado interesse real nele (nunca na abertura da trilha nem enquanto ela ainda está conhecendo as opções). Nesse momento, ofereça uma única vez: \"Quer ver como ela fica no seu espaço? Me manda uma foto do ambiente e me diz a cor que você quer, que eu te mostro uma simulação.\" Nessa mensagem, essa oferta é o CTA.\n\nA simulação mostra a maca escolhida e, se ela quiser, o mocho na mesma cor e o carrinho auxiliar preto. A base dourada só aparece na Master com base dourada.\n\nCor: aceite qualquer cor que a cliente disser, pelo nome ou pelo código (ex.: \"rosa bebê\", \"#F4C2C2\", \"Pantone 13-1520\"). Se a cor for vaga (\"uma clarinha\"), peça para ela especificar.\n\nQuando chegar uma mensagem no formato \"[FOTO RECEBIDA id=...]\", é uma foto que a cliente mandou (do ambiente ou, depois do pedido, o comprovante). Você não vê a imagem, só o id; guarde o id.\n\nAssim que você tiver modelo, cor e id da foto do ambiente, responda com uma frase curta apresentando a simulação (a imagem é enviada logo antes da sua mensagem) e avisando que ela é ilustrativa (a cor real pode variar um pouco), seguida do próximo passo da trilha, com um único CTA. Na última linha da resposta, escreva exatamente:\n[[GERAR_IMAGEM|modelo=<classica, luxo ou master>|cor=<a cor como a cliente pediu, com o código se ela deu>|foto=<id da foto>|base_dourada=<sim ou nao>|mocho=<sim ou nao>|mocho_base_dourada=<sim ou nao>|carrinho=<sim ou nao>]]\nEssa linha é interna: o sistema remove antes de enviar e a cliente não vê. Nunca escreva essa linha sem modelo, cor e id da foto.\n\nSe faltar o modelo ou a cor, pergunte o que falta. Quando ela responder, escreva a linha usando o id da foto que ela já mandou, sem pedir a foto de novo.\n\nLimite: no máximo 2 simulações por cliente (a segunda só se ela pedir outra cor ou outro modelo). O número de simulações já feitas aparece em \"Estado desta cliente\". Se já tiver 2, não escreva a linha: diga com gentileza que o time de macas pode mostrar outras combinações e passe o contato (31) 99495-6526.\n\n## Mensagens que não são texto\r\n\r\nSe chegar \"[A cliente enviou uma mensagem do tipo ...]\", diga com gentileza que por aqui você só consegue ler texto (e fotos do ambiente, na trilha de macas) e peça para ela escrever.\r\n\r\n## Gatilhos de escalonamento (valem para todas as trilhas)\r\n\r\nEscalar imediatamente para atendimento humano quando:\r\n- Pedido de preço de curso fora do Novos Efeitos 2026.\r\n- Qualquer menção ao Congresso além da mensagem padrão da trilha.\r\n- Fechamento de maca em negociação (desconto, prazo especial, parcelamento fora do padrão).\r\n- Reclamação, troca, devolução, rastreio de pedido.\r\n- Pergunta sobre segurança do procedimento, reação alérgica, saúde ocular.\r\n- Qualquer pergunta fora do escopo comercial das quatro frentes.\r\n- Cliente pedir explicitamente para falar com uma pessoa.\r\n\r\nMensagem padrão de escalonamento: \"Vou te passar pra nossa equipe agora, que te atende com todo cuidado nisso. Só um instante!\"\r\n\r\n## Fallback geral\r\n\r\nQuando não reconhecer a intenção mesmo após o menu: \"Não consegui entender direito. Você quer saber sobre produtos da loja, o curso Novos Efeitos 2026, o Congresso MasterPro ou uma maca pro seu estúdio?\"\r\n\r\nSe a pessoa insistir em algo fora do escopo (ex.: pergunta pessoal, assunto não relacionado ao negócio), redirecionar com gentileza para o menu de trilhas, sem tentar responder.\n\n## Estado desta cliente\n\nChat de teste.\n"
+          }
+        },
+        "id": "9fffaea5-fe00-4eb9-8688-f93e9d1dd82d",
+        "name": "AI Agent",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          528,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "claude-sonnet-5",
+            "mode": "list",
+            "cachedResultName": "Claude Sonnet 5"
+          },
+          "options": {}
+        },
+        "id": "51d42e1e-b79a-475f-8c37-6646e2cf1294",
+        "name": "Anthropic Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.6,
+        "position": [
+          512,
+          528
+        ],
+        "credentials": {
+          "anthropicApi": {
+            "id": "LwdTSQafIB4i6Kxt",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "updates": [
+            "messages"
+          ],
+          "options": {}
+        },
+        "id": "b23993a8-f004-43eb-85e2-42a6cd91543f",
+        "name": "WhatsApp Trigger",
+        "type": "n8n-nodes-base.whatsAppTrigger",
+        "typeVersion": 1,
+        "position": [
+          240,
+          704
+        ],
+        "webhookId": "b798332c-b4d4-4989-ae51-5e59d967ccfa",
+        "credentials": {
+          "whatsAppTriggerApi": {
+            "id": "GLpeg2NiQ1GORbMd",
+            "name": "WhatsApp OAuth account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const out = [];\nfor (const item of $input.all()) {\n  const msg = (item.json.messages || [])[0];\n  // Webhooks de status (enviado, entregue, lido) não têm \"messages\": ignora\n  if (!msg) continue;\n  let chatInput;\n  let mediaId = null;\n  switch (msg.type) {\n    case 'text':\n      chatInput = msg.text.body;\n      break;\n    case 'image':\n      mediaId = msg.image.id;\n      chatInput = `[FOTO RECEBIDA id=${mediaId}]` + (msg.image.caption ? ` Legenda: ${msg.image.caption}` : '');\n      break;\n    case 'document':\n      mediaId = msg.document.id;\n      chatInput = `[ARQUIVO RECEBIDO id=${mediaId} nome=${msg.document.filename || 'arquivo'}]` + (msg.document.caption ? ` Legenda: ${msg.document.caption}` : '');\n      break;\n    case 'button':\n      chatInput = msg.button.text;\n      break;\n    case 'interactive':\n      chatInput = msg.interactive?.button_reply?.title || msg.interactive?.list_reply?.title || '[resposta interativa]';\n      break;\n    default:\n      chatInput = `[A cliente enviou uma mensagem do tipo \"${msg.type}\", que não consigo abrir]`;\n  }\n  out.push({ json: { chatInput, waFrom: msg.from, mediaId, msgType: msg.type } });\n}\nreturn out;"
+        },
+        "id": "355b5696-9264-4972-b409-4d3c0ccc6693",
+        "name": "Normalizar mensagem WhatsApp",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          440,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.chatInput }}",
+          "options": {
+            "systemMessage": "={{ $('Preparar contexto').first().json.systemPrompt }}"
+          }
+        },
+        "id": "1188ac9c-c155-4ea7-8417-9715e6e74975",
+        "name": "AI Agent (WhatsApp)",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          1000,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "send",
+          "phoneNumberId": "=1141510365703813",
+          "recipientPhoneNumber": "={{ $('Normalizar mensagem WhatsApp').first().json.waFrom }}",
+          "textBody": "={{ $json.texto }}",
+          "additionalFields": {}
+        },
+        "id": "a4f1e2d3-c4b5-4a69-8f01-2c3d4e5f6a7b",
+        "name": "Enviar Resposta WhatsApp",
+        "type": "n8n-nodes-base.whatsApp",
+        "typeVersion": 1,
+        "position": [
+          3200,
+          704
+        ],
+        "webhookId": "3d07fad1-e62c-4afb-9d8e-82085e237bdb",
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "verifyToken": "miriammota-ig-verify-2026",
+          "eventsToInclude": [
+            "comments",
+            "messages"
+          ]
+        },
+        "type": "@mookielianhd/n8n-nodes-instagram.instagramTrigger",
+        "typeVersion": 2,
+        "position": [
+          80,
+          448
+        ],
+        "id": "0ed34ea4-8d2a-4de0-861c-ab82836f8559",
+        "name": "Instagram Trigger",
+        "webhookId": "97f7d2c8-4f59-4afb-a1e5-6e4042f8431c"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "528524a4-56e0-49e1-950f-15938d1ab325"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.4,
+        "position": [
+          304,
+          448
+        ],
+        "id": "bd8760c0-a9a4-4a79-b174-bcfcc517b428",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "options": {
+            "timeout": 15000
+          },
+          "url": "https://sheets.googleapis.com/v4/spreadsheets/1Hlusr7gXirrc1KLlGZ-2oSiuFGHTQOLNLbd-h1YyyYI/values/Resumo!A1:J60",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSheetsOAuth2Api",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "valueRenderOption",
+                "value": "UNFORMATTED_VALUE"
+              }
+            ]
+          }
+        },
+        "id": "c0a1b2c4-0001-4000-8000-000000000000",
+        "name": "Buscar preços",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          620,
+          704
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "PREENCHER",
+            "name": "Google Sheets"
+          }
+        },
+        "onError": "continueRegularOutput",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Regras de negócio da trilha de macas: preços (aba Resumo), frete por CEP, orçamento,\n// validação de CPF e código PIX \"copia e cola\". As contas são feitas aqui, nunca pela IA.\n//\n// O build-v3.js copia estas funções para os nós de código do n8n (fonte única da regra).\n// Testes: node workflow/orcamento.test.js\n\n// ---------- configuração ----------\nconst CONFIG = {\n  pix: {\n    chave: '62768656000106', // CNPJ da POWER LASH CILIOS E CURSOS LTDA\n    nome: 'POWER LASH CILIOS CURSOS', // até 25 caracteres, sem acento\n    cidade: 'BELO HORIZONTE', // até 15 caracteres, sem acento\n  },\n  // Frete por pedido (não por unidade)\n  frete: { bhCapital: 300, sudeste: 600, sul: 800, nordeste: 1000, centroOeste: 1000 },\n  acrescimoMochoBaseDourada: 50,\n};\n\n// ---------- utilidades ----------\nfunction semAcento(s) {\n  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');\n}\n\nfunction brl(v) {\n  const [int, dec] = Math.abs(v).toFixed(2).split('.');\n  return (v < 0 ? '-' : '') + 'R$ ' + int.replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.') + ',' + dec;\n}\n\nfunction numero(v) {\n  if (typeof v === 'number') return v;\n  const s = String(v || '').replace(/[^\\d,.-]/g, '');\n  if (!s) return NaN;\n  // \"2.990,00\" -> 2990.00 ; \"2990.0\" -> 2990\n  return s.includes(',') ? Number(s.replace(/\\./g, '').replace(',', '.')) : Number(s);\n}\n\n// ---------- preços (aba Resumo: A = variação, I = preço PIX, J = preço cartão) ----------\nfunction chaveVariacao({ modelo, massageador, baseDourada, mocho }) {\n  return [modelo, massageador ? 'mass' : 'sem-mass', baseDourada ? 'base' : 'sem-base', mocho ? 'mocho' : 'sem-mocho'].join('|');\n}\n\nfunction lerVariacao(nome) {\n  const n = semAcento(nome).toLowerCase();\n  if (/^mocho/.test(n.trim())) return { tipo: 'mocho' };\n  if (/carrinho/.test(n)) return { tipo: 'carrinho' };\n  const modelo = /master/.test(n) ? 'master' : /classica/.test(n) ? 'classica' : /luxo/.test(n) ? 'luxo' : null;\n  if (!modelo) return null;\n  return {\n    tipo: 'maca',\n    modelo,\n    massageador: /com massageador/.test(n),\n    baseDourada: /com base dourada/.test(n),\n    mocho: /\\+\\s*mocho/.test(n),\n  };\n}\n\n// values: matriz da API do Sheets (Resumo!A1:J60), com a linha de cabeçalho\nfunction parsePrecos(values) {\n  const tabela = { variacoes: {}, mocho: null, carrinho: null, linhas: [] };\n  for (const row of values || []) {\n    const nome = String(row[0] || '').trim();\n    const pix = numero(row[8]);\n    const cartao = numero(row[9]);\n    if (!nome || !isFinite(pix) || !isFinite(cartao)) continue;\n    const v = lerVariacao(nome);\n    if (!v) continue;\n    const preco = { nome, pix, cartao };\n    tabela.linhas.push(preco);\n    if (v.tipo === 'mocho') tabela.mocho = preco;\n    else if (v.tipo === 'carrinho') tabela.carrinho = preco;\n    else tabela.variacoes[chaveVariacao(v)] = preco;\n  }\n  return tabela;\n}\n\n// Texto da tabela para o prompt da IA (só preço de venda, nunca custo)\nfunction tabelaParaTexto(tabela) {\n  return tabela.linhas.map((l) => `- ${l.nome}: PIX ${brl(l.pix)} | Cartão ${brl(l.cartao)}`).join('\\n');\n}\n\n// ---------- frete pelo CEP ----------\nconst FAIXAS_CEP = [\n  [1000, 19999, 'SP'], [20000, 28999, 'RJ'], [29000, 29999, 'ES'], [30000, 39999, 'MG'],\n  [40000, 48999, 'BA'], [49000, 49999, 'SE'], [50000, 56999, 'PE'], [57000, 57999, 'AL'],\n  [58000, 58999, 'PB'], [59000, 59999, 'RN'], [60000, 63999, 'CE'], [64000, 64999, 'PI'],\n  [65000, 65999, 'MA'], [66000, 68899, 'PA'], [68900, 68999, 'AP'], [69000, 69299, 'AM'],\n  [69300, 69399, 'RR'], [69400, 69899, 'AM'], [69900, 69999, 'AC'], [70000, 72799, 'DF'],\n  [72800, 72999, 'GO'], [73000, 73699, 'DF'], [73700, 76799, 'GO'], [76800, 76999, 'RO'],\n  [77000, 77999, 'TO'], [78000, 78899, 'MT'], [79000, 79999, 'MS'], [80000, 87999, 'PR'],\n  [88000, 89999, 'SC'], [90000, 99999, 'RS'],\n];\nconst REGIAO_UF = {\n  sudeste: ['SP', 'RJ', 'ES', 'MG'],\n  sul: ['PR', 'SC', 'RS'],\n  nordeste: ['BA', 'SE', 'PE', 'AL', 'PB', 'RN', 'CE', 'PI', 'MA'],\n  centroOeste: ['DF', 'GO', 'MT', 'MS'],\n  norte: ['PA', 'AP', 'AM', 'RR', 'AC', 'RO', 'TO'],\n};\nconst NOME_REGIAO = { sudeste: 'Sudeste', sul: 'Sul', nordeste: 'Nordeste', centroOeste: 'Centro-Oeste', norte: 'Norte' };\n\nfunction freteDoCep(cepTexto) {\n  const cep = String(cepTexto || '').replace(/\\D/g, '');\n  if (cep.length !== 8) return { ok: false, motivo: 'cep_invalido' };\n  const n5 = Number(cep.slice(0, 5));\n  const faixa = FAIXAS_CEP.find(([a, b]) => n5 >= a && n5 <= b);\n  if (!faixa) return { ok: false, motivo: 'cep_invalido' };\n  const uf = faixa[2];\n  const regiao = Object.keys(REGIAO_UF).find((r) => REGIAO_UF[r].includes(uf));\n  const cepFmt = cep.slice(0, 5) + '-' + cep.slice(5);\n  // Belo Horizonte capital: CEP 30000-000 a 31999-999\n  const bhCapital = n5 >= 30000 && n5 <= 31999;\n  if (regiao === 'norte') return { ok: true, atende: false, cep: cepFmt, uf, regiao: NOME_REGIAO.norte };\n  const valor = bhCapital ? CONFIG.frete.bhCapital : CONFIG.frete[regiao];\n  return {\n    ok: true,\n    atende: true,\n    cep: cepFmt,\n    uf,\n    regiao: bhCapital ? 'Belo Horizonte (capital)' : NOME_REGIAO[regiao],\n    valor,\n  };\n}\n\n// ---------- orçamento ----------\nconst NOME_MODELO = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };\n\nfunction sim(v) {\n  return /^(s|sim|true|1|yes)$/i.test(String(v || '').trim());\n}\n\n// pedido: { modelo, massageador, base_dourada, mocho, mocho_base_dourada, carrinho, quantidade, cep }\nfunction calcularOrcamento(pedido, tabela) {\n  const modelo = semAcento(pedido.modelo).toLowerCase().trim();\n  if (!NOME_MODELO[modelo]) return { ok: false, erro: 'modelo' };\n  const quantidade = Math.max(1, parseInt(pedido.quantidade, 10) || 1);\n  const massageador = sim(pedido.massageador);\n  const baseDourada = modelo === 'master' && sim(pedido.base_dourada); // base dourada só na Master\n  const mocho = sim(pedido.mocho);\n  const mochoBaseDourada = mocho && modelo === 'master' && sim(pedido.mocho_base_dourada);\n  const carrinho = sim(pedido.carrinho);\n\n  const frete = freteDoCep(pedido.cep);\n  if (!frete.ok) return { ok: false, erro: 'cep' };\n  if (!frete.atende) return { ok: false, erro: 'regiao_nao_atendida', frete };\n\n  const itens = [];\n  const add = (descricao, precos, qtd) => itens.push({ descricao, qtd, pix: precos.pix * qtd, cartao: precos.cartao * qtd });\n\n  const semMocho = tabela.variacoes[chaveVariacao({ modelo, massageador, baseDourada, mocho: false })];\n  if (!semMocho) return { ok: false, erro: 'preco_indisponivel' };\n  const comMocho = mocho && tabela.variacoes[chaveVariacao({ modelo, massageador, baseDourada, mocho: true })];\n\n  const descMaca = [\n    NOME_MODELO[modelo],\n    massageador ? 'com massageador' : 'sem massageador',\n    modelo === 'master' ? (baseDourada ? 'com base dourada' : 'sem base dourada') : null,\n  ].filter(Boolean).join(', ');\n\n  if (comMocho) {\n    add(descMaca + ' + mocho na mesma cor (kit)', comMocho, quantidade);\n  } else {\n    add(descMaca, semMocho, quantidade);\n    if (mocho) {\n      if (!tabela.mocho) return { ok: false, erro: 'preco_indisponivel' };\n      add('Mocho na mesma cor da maca', tabela.mocho, quantidade);\n    }\n  }\n  if (mochoBaseDourada) {\n    const a = CONFIG.acrescimoMochoBaseDourada;\n    add('Base dourada no mocho', { pix: a, cartao: a }, quantidade);\n  }\n  if (carrinho) {\n    if (!tabela.carrinho) return { ok: false, erro: 'preco_indisponivel' };\n    add('Carrinho auxiliar preto', tabela.carrinho, quantidade);\n  }\n\n  const subtotalPix = itens.reduce((s, i) => s + i.pix, 0);\n  const subtotalCartao = itens.reduce((s, i) => s + i.cartao, 0);\n  return {\n    ok: true,\n    modelo,\n    quantidade,\n    massageador,\n    baseDourada,\n    mocho,\n    mochoBaseDourada,\n    carrinho,\n    itens,\n    frete,\n    subtotalPix,\n    subtotalCartao,\n    totalPix: subtotalPix + frete.valor,\n    totalCartao: subtotalCartao + frete.valor,\n  };\n}\n\nfunction orcamentoParaTexto(o) {\n  const linhas = ['*Orçamento MACAS PRO*', ''];\n  for (const i of o.itens) {\n    linhas.push(`• ${i.qtd}x ${i.descricao}`);\n    linhas.push(`   PIX ${brl(i.pix)} | Cartão ${brl(i.cartao)}`);\n  }\n  linhas.push(`• Frete para ${o.frete.regiao} (CEP ${o.frete.cep}): ${brl(o.frete.valor)}`);\n  linhas.push('');\n  linhas.push(`*Total no PIX: ${brl(o.totalPix)}*`);\n  linhas.push(`*Total no cartão: ${brl(o.totalCartao)}* (parcelado em até 12x)`);\n  return linhas.join('\\n');\n}\n\nfunction resumoOrcamento(o) {\n  const itens = o.itens.map((i) => `${i.qtd}x ${i.descricao}`).join('; ');\n  return `${itens}; frete ${brl(o.frete.valor)} (${o.frete.regiao}, CEP ${o.frete.cep}); total PIX ${brl(o.totalPix)}; total cartão ${brl(o.totalCartao)}`;\n}\n\n// ---------- CPF ----------\nfunction cpfValido(cpfTexto) {\n  const c = String(cpfTexto || '').replace(/\\D/g, '');\n  if (c.length !== 11 || /^(\\d)\\1{10}$/.test(c)) return false;\n  const dig = (n) => {\n    let s = 0;\n    for (let i = 0; i < n; i++) s += Number(c[i]) * (n + 1 - i);\n    const r = (s * 10) % 11;\n    return r === 10 ? 0 : r;\n  };\n  return dig(9) === Number(c[9]) && dig(10) === Number(c[10]);\n}\n\n// ---------- PIX copia e cola (BR Code estático, padrão do Banco Central) ----------\nfunction crc16(payload) {\n  let crc = 0xffff;\n  for (let i = 0; i < payload.length; i++) {\n    crc ^= payload.charCodeAt(i) << 8;\n    for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;\n  }\n  return crc.toString(16).toUpperCase().padStart(4, '0');\n}\n\nfunction gerarPix({ valor, txid }) {\n  const campo = (id, v) => id + String(v.length).padStart(2, '0') + v;\n  const limpa = (s, max) => semAcento(s).toUpperCase().replace(/[^A-Z0-9 ]/g, '').slice(0, max);\n  const conta = campo('00', 'br.gov.bcb.pix') + campo('01', CONFIG.pix.chave);\n  const id = String(txid || '***').replace(/[^A-Za-z0-9]/g, '').slice(0, 25) || '***';\n  const payload =\n    campo('00', '01') +\n    campo('26', conta) +\n    campo('52', '0000') +\n    campo('53', '986') +\n    campo('54', Number(valor).toFixed(2)) +\n    campo('58', 'BR') +\n    campo('59', limpa(CONFIG.pix.nome, 25)) +\n    campo('60', limpa(CONFIG.pix.cidade, 15)) +\n    campo('62', campo('05', id)) +\n    '6304';\n  return payload + crc16(payload);\n}\n\n\nconst BASE_PROMPT = \"Você é o assistente de atendimento da Miriam Mota Academy no WhatsApp. Fala em nome da marca, tom de mestra que já passou pelo caminho: próximo e direto, sem soar corporativo nem professoral. Para a trilha de macas, o tom sobe de registro: mais consultivo, mais \\\"parceira de negócio\\\", mas sem perder a proximidade.\\r\\n\\r\\nSeu objetivo em cada conversa é identificar rápido qual das quatro frentes a pessoa quer (loja, curso, Congresso, macas) e seguir o roteiro daquela trilha. Nunca misture o discurso de uma trilha com outra na mesma resposta.\\r\\n\\r\\nRegras fixas, nunca quebre:\\r\\n- CTA único por mensagem. Nunca ofereça duas ações concorrentes na mesma resposta.\\r\\n- Nunca prometa resultado financeiro, vaga de emprego ou retorno específico como consequência de curso ou compra.\\r\\n- Nunca faça alegação de resultado clínico ou de segurança do procedimento; se perguntarem sobre saúde ocular ou reação alérgica, encaminhe para atendimento humano.\\r\\n- Se citar número de formadas, use \\\"mais de 20 mil profissionais formadas\\\" e nunca cite a cifra sem essa ressalva de que é o número mais conservador entre as fontes disponíveis.\\r\\n- Nunca invente preço, prazo ou promoção que não esteja neste roteiro. Se não souber, encaminhe para atendimento humano em vez de arriscar.\\r\\n- Se a pessoa demonstrar frustração, reclamação, ou pedir para falar com uma pessoa, escale imediatamente sem insistir em resolver pela IA.\\r\\n\\r\\n## Menu inicial / detecção de intenção\\r\\n\\r\\nPrimeira mensagem do cliente aciona identificação de intenção por palavra-chave ou, se ambíguo, menu direto.\\r\\n\\r\\nMensagem de abertura (quando a intenção não ficar clara na primeira mensagem):\\r\\n\\r\\n\\\"Oi! Aqui é o atendimento da Miriam Mota. Me conta rapidinho o que você procura:\\r\\n1. Produtos da loja (home care ou insumo profissional)\\r\\n2. Curso Novos Efeitos 2026\\r\\n3. Congresso MasterPro\\r\\n4. Maca para o meu estúdio\\r\\nPode digitar o número ou só me contar com suas palavras.\\\"\\r\\n\\r\\nPalavras-chave que pulam direto para a trilha, sem precisar do menu: \\\"maca\\\", \\\"congresso\\\", \\\"curso\\\", \\\"produto\\\", \\\"cílios\\\", \\\"atacado\\\", \\\"revenda\\\".\\r\\n\\r\\n## Trilha Loja\\r\\n\\r\\nPúblico: dividido entre consumidora final de home care e profissional comprando insumo ou revendendo no atacado.\\r\\n\\r\\nPrimeira pergunta obrigatória, sempre: \\\"Show! É pra uso próprio ou você trabalha com cílios e tá comprando pra revenda/uso profissional?\\\"\\r\\n\\r\\nSe uso próprio (home care): \\\"Temos a linha completa de cuidado: Mousse de Limpeza, Lash Fix, Lash Finish, Sérum Lash Brow e o Kit Retenção. Qual desses te interessa, ou quer que eu te mande o catálogo completo? Frete grátis pra compras acima de R$ 499,90 e parcelamento em até 2x sem juros. Site: lojamiriammota.com.br\\\"\\r\\n\\r\\nSe profissional/revenda: \\\"Perfeito, temos aba de atacado pra profissional: cílios, pinças, adesivos e acessórios. Me conta se você já é atacadista cadastrada ou é a primeira compra, que eu te oriento certinho.\\\"\\r\\nSe primeira compra no atacado: encaminhar para atendimento humano (cadastro de atacado normalmente tem condição negociada, fora do escopo do bot).\\r\\n\\r\\nCTA de fundo (uso próprio, já decidida): \\\"Fecha direto aqui: lojamiriammota.com.br. Qualquer dúvida no meio do caminho, só me chamar de novo.\\\"\\r\\n\\r\\nFallback loja (pergunta fora do catálogo, ex.: rastreio de pedido, troca, devolução): escalar para atendimento humano via WhatsApp (31) 98349-4901.\\r\\n\\r\\n## Trilha Curso\\r\\n\\r\\nPúblico: aspirante ou lashdesigner iniciante/profissional buscando formação.\\r\\n\\r\\nRegra central: o bot vende apenas Novos Efeitos 2026. Nenhum outro curso do catálogo tem preço liberado para o bot citar.\\r\\n\\r\\nSe a pessoa perguntar sobre Novos Efeitos 2026: \\\"O Novos Efeitos 2026 ensina os efeitos que mais bombam hoje: Fox, Glow, Brown, Esfumado, Degradê e Shine, e como precificar cada um certinho. Investimento: R$ 397,00 ou 3x de R$ 32,34. Link direto: https://miriammotaonline.com.br/?ref=A107178810N\\\"\\r\\n\\r\\nSe a pessoa perguntar sobre qualquer outro curso (Miriam, Comunidade LashPRO, Efeito Laminaddo, Lash Lifting, Led UV, Master Pro 2026): \\\"Esse curso eu vou te passar pra nossa equipe te atender certinho, com todas as condições atualizadas. Só um instante que já te chamam por aqui.\\\" → escalar para atendimento humano, sem citar preço, prazo ou promoção.\\r\\n\\r\\nSe a pessoa perguntar algo genérico tipo \\\"quais cursos vocês têm\\\": \\\"Hoje eu consigo te passar direto as informações do Novos Efeitos 2026, nosso curso de efeitos modernos. Pra conhecer o restante da esteira (formação completa, laminação, Led UV, Master PRO), te encaminho pra nossa equipe, que te mostra o caminho certo pro seu momento de carreira. Quer que eu já te apresente o Novos Efeitos ou prefere falar com a equipe sobre os outros?\\\"\\r\\n\\r\\n## Trilha Congresso\\r\\n\\r\\nPúblico: amplo, alunas, ex-alunas, profissionais de fora da base, possíveis patrocinadoras.\\r\\nAção: hoje, só qualificar e direcionar para atendimento humano. Não linkar a página de vendas enquanto a chamada de urgência estiver vencida.\\r\\n\\r\\nSe a pessoa perguntar sobre o Congresso: \\\"O Congresso MasterPro é a nossa 11ª edição, dia 30/08/2026 em Belo Horizonte, com transmissão ao vivo pela Hotmart pra quem não puder ir presencial. Investimento: R$ 399,00. Pra garantir sua vaga, te encaminho pra nossa equipe agora, que confirma lote e disponibilidade atualizados.\\\" → escalar para atendimento humano. Não enviar o link go.hotmart.com/I106991758R enquanto a chamada de urgência estiver desatualizada.\\r\\n\\r\\n## Trilha Macas\\n\\nPúblico: dona de estúdio ou profissional estabelecida investindo no espaço de trabalho. Tom consultivo, de parceira de negócio.\\n\\n### Produtos e opcionais\\n\\n- Modelos: MACA PRO Clássica, MACA PRO Luxo e MACA PRO Master. Todas em mais de 50 cores, com opção sob medida; toda compra vem com almofada personalizada na cor da maca e o curso Novos Efeitos 2026 incluso.\\n- Massageador integrado (vibração controlada por app ou controle sem fio): opcional em qualquer modelo.\\n- Base dourada: opcional só na MACA PRO Master. A única cor de base é a dourada. Clássica e Luxo nunca têm base dourada.\\n- Mocho: sempre na mesma cor da maca. Base dourada no mocho só quando for junto com a Master (R$ 50 a mais).\\n- Carrinho auxiliar: sempre preto.\\n\\n### Tabela de preços (lida agora da planilha oficial; use só estes valores)\\n\\n{{TABELA_PRECOS}}\\n\\nFrete, sempre cobrado à parte e calculado pelo sistema a partir do CEP: Belo Horizonte capital R$ 300; demais cidades do Sudeste R$ 600; Sul R$ 800; Nordeste e Centro-Oeste R$ 1.000. A região Norte ainda não é atendida: se o CEP for do Norte, diga com gentileza que ainda não entregamos lá.\\n\\nNunca some valores, calcule totais ou frete por conta própria, e nunca cite custo, margem ou lucro. Os valores do orçamento são calculados pelo sistema (veja a linha [[ORCAMENTO]] abaixo). Se a tabela acima estiver indisponível, não passe preço: ofereça o atendimento humano.\\n\\n### Condução da conversa\\n\\nAbertura da trilha: \\\"Que bom que você tá pensando em investir no seu espaço! Pra te indicar certinho, me conta: você já tem um modelo em mente (Clássica, Luxo ou Master) ou quer que eu te apresente as opções primeiro?\\\"\\n\\nSe pedir para apresentar as opções, apresente os três modelos e os opcionais em poucas linhas e pergunte qual combina mais com o estúdio dela.\\n\\nPara montar o orçamento, pergunte de forma natural (uma ou duas perguntas por mensagem, sem questionário): modelo; com ou sem massageador; se for Master, com ou sem base dourada; se quer o mocho na mesma cor (e, na Master, se o mocho tem base dourada); se quer o carrinho auxiliar preto; quantidade (padrão 1); e o CEP de entrega.\\n\\n### Orçamento\\n\\nAssim que tiver modelo, massageador, base dourada (só Master), mocho, carrinho, quantidade e CEP, escreva uma frase curta de introdução e, na linha seguinte, exatamente:\\n[[ORCAMENTO|modelo=<classica, luxo ou master>|massageador=<sim ou nao>|base_dourada=<sim ou nao>|mocho=<sim ou nao>|mocho_base_dourada=<sim ou nao>|carrinho=<sim ou nao>|quantidade=<número>|cep=<CEP>]]\\nO sistema troca essa linha pelo orçamento com os valores e o frete. Depois dela, escreva um único CTA: se ela quer fechar o pedido (e que você vai precisar de alguns dados para isso).\\n\\nSe ela mudar algum item ou o CEP, escreva uma nova linha [[ORCAMENTO|...]] com tudo atualizado. O último orçamento enviado aparece em \\\"Estado desta cliente\\\", no fim deste prompt: use-o para responder dúvidas sobre valores, sem recalcular.\\n\\n### Pedido\\n\\nQuando ela quiser fechar, peça os dados para o pedido (pode ser tudo numa mensagem, em lista): nome completo, telefone com DDD, CPF, e-mail, endereço (rua), número, complemento ou ponto de referência, bairro, cidade/estado, CEP, cor e tecido da maca, e a forma de pagamento: PIX ou cartão (parcelado em até 12x).\\n\\nCom todos os dados em mãos, repita um resumo curto (modelo, opcionais, cor e tecido, endereço de entrega, forma de pagamento) e peça confirmação. Só depois que ela confirmar, escreva uma frase curta e, na linha seguinte, exatamente:\\n[[PEDIDO|nome=...|telefone=...|cpf=...|email=...|endereco=...|numero=...|complemento=...|bairro=...|cidade=...|uf=<sigla do estado>|cep=...|cor_tecido=...|pagamento=<pix ou cartao>|obs=<observações da cliente ou vazio>]]\\nO sistema registra o pedido, gera o número e envia o PIX copia e cola (no PIX) ou avisa que a equipe manda o link do cartão. Não escreva nada sobre o pagamento depois dessa linha: o sistema completa a mensagem. Nunca invente dados; se faltar algum, pergunte antes. Não use o caractere \\\"|\\\" dentro dos valores.\\n\\nSe o CEP do pedido for diferente do CEP do último orçamento, faça antes um novo [[ORCAMENTO]] com o CEP novo e confirme o valor com ela.\\n\\nDepois do pedido registrado, se ela mandar o comprovante do PIX (foto ou arquivo), agradeça e diga que a equipe vai conferir e confirmar. No cartão, diga que a equipe está gerando o link e manda em instantes.\\n\\n### Atendimento humano durante o orçamento\\n\\nSe, na etapa de orçamento ou pedido, a cliente pedir para falar com uma pessoa, diga que vai passar para a equipe e sugira que ela já adiante o máximo destas informações para agilizar:\\n\\n◻️ Nome completo:\\n◻️ Telefone (DDD):\\n◻️ CPF:\\n◻️ E-mail:\\n◻️ Endereço:\\n◻️ Número:\\n◻️ Bairro:\\n◻️ Cidade / Estado:\\n◻️ CEP:\\n◻️ Quantidade:\\n◻️ Cor e tecido:\\n◻️ Modelo:\\n◻️ Com ou sem massageador:\\n◻️ Com ou sem base dourada (apenas maca Master):\\n\\nSe precisar do contato direto: WhatsApp da Andrea (31) 98349-4901 ou o e-mail miriamadm@miriammotaacademy.com.\\n\\n### Simulação da maca no ambiente da cliente\\n\\nSó ofereça a simulação depois que a cliente já tiver escolhido um modelo específico e demonstrado interesse real nele (nunca na abertura da trilha nem enquanto ela ainda está conhecendo as opções). Nesse momento, ofereça uma única vez: \\\"Quer ver como ela fica no seu espaço? Me manda uma foto do ambiente e me diz a cor que você quer, que eu te mostro uma simulação.\\\" Nessa mensagem, essa oferta é o CTA.\\n\\nA simulação mostra a maca escolhida e, se ela quiser, o mocho na mesma cor e o carrinho auxiliar preto. A base dourada só aparece na Master com base dourada.\\n\\nCor: aceite qualquer cor que a cliente disser, pelo nome ou pelo código (ex.: \\\"rosa bebê\\\", \\\"#F4C2C2\\\", \\\"Pantone 13-1520\\\"). Se a cor for vaga (\\\"uma clarinha\\\"), peça para ela especificar.\\n\\nQuando chegar uma mensagem no formato \\\"[FOTO RECEBIDA id=...]\\\", é uma foto que a cliente mandou (do ambiente ou, depois do pedido, o comprovante). Você não vê a imagem, só o id; guarde o id.\\n\\nAssim que você tiver modelo, cor e id da foto do ambiente, responda com uma frase curta apresentando a simulação (a imagem é enviada logo antes da sua mensagem) e avisando que ela é ilustrativa (a cor real pode variar um pouco), seguida do próximo passo da trilha, com um único CTA. Na última linha da resposta, escreva exatamente:\\n[[GERAR_IMAGEM|modelo=<classica, luxo ou master>|cor=<a cor como a cliente pediu, com o código se ela deu>|foto=<id da foto>|base_dourada=<sim ou nao>|mocho=<sim ou nao>|mocho_base_dourada=<sim ou nao>|carrinho=<sim ou nao>]]\\nEssa linha é interna: o sistema remove antes de enviar e a cliente não vê. Nunca escreva essa linha sem modelo, cor e id da foto.\\n\\nSe faltar o modelo ou a cor, pergunte o que falta. Quando ela responder, escreva a linha usando o id da foto que ela já mandou, sem pedir a foto de novo.\\n\\nLimite: no máximo 2 simulações por cliente (a segunda só se ela pedir outra cor ou outro modelo). O número de simulações já feitas aparece em \\\"Estado desta cliente\\\". Se já tiver 2, não escreva a linha: diga com gentileza que o time de macas pode mostrar outras combinações e passe o contato (31) 99495-6526.\\n\\n## Mensagens que não são texto\\r\\n\\r\\nSe chegar \\\"[A cliente enviou uma mensagem do tipo ...]\\\", diga com gentileza que por aqui você só consegue ler texto (e fotos do ambiente, na trilha de macas) e peça para ela escrever.\\r\\n\\r\\n## Gatilhos de escalonamento (valem para todas as trilhas)\\r\\n\\r\\nEscalar imediatamente para atendimento humano quando:\\r\\n- Pedido de preço de curso fora do Novos Efeitos 2026.\\r\\n- Qualquer menção ao Congresso além da mensagem padrão da trilha.\\r\\n- Fechamento de maca em negociação (desconto, prazo especial, parcelamento fora do padrão).\\r\\n- Reclamação, troca, devolução, rastreio de pedido.\\r\\n- Pergunta sobre segurança do procedimento, reação alérgica, saúde ocular.\\r\\n- Qualquer pergunta fora do escopo comercial das quatro frentes.\\r\\n- Cliente pedir explicitamente para falar com uma pessoa.\\r\\n\\r\\nMensagem padrão de escalonamento: \\\"Vou te passar pra nossa equipe agora, que te atende com todo cuidado nisso. Só um instante!\\\"\\r\\n\\r\\n## Fallback geral\\r\\n\\r\\nQuando não reconhecer a intenção mesmo após o menu: \\\"Não consegui entender direito. Você quer saber sobre produtos da loja, o curso Novos Efeitos 2026, o Congresso MasterPro ou uma maca pro seu estúdio?\\\"\\r\\n\\r\\nSe a pessoa insistir em algo fora do escopo (ex.: pergunta pessoal, assunto não relacionado ao negócio), redirecionar com gentileza para o menu de trilhas, sem tentar responder.\\n\\n## Estado desta cliente\\n\\n{{ESTADO_CLIENTE}}\\n\";\nconst msg = $('Normalizar mensagem WhatsApp').first().json;\nconst resp = $input.first().json || {};\nconst tabela = Array.isArray(resp.values) ? parsePrecos(resp.values) : null;\nconst precosOk = !!(tabela && tabela.linhas.length);\nconst tabelaTexto = precosOk\n  ? tabelaParaTexto(tabela)\n  : 'INDISPONÍVEL no momento: não passe preços e ofereça o atendimento humano.';\nconst st = $getWorkflowStaticData('global');\nconst c = (st.clientes || {})[msg.waFrom] || {};\nconst estado = [\n  c.orcamento ? 'Último orçamento enviado: ' + c.orcamento.resumo : 'Nenhum orçamento enviado ainda.',\n  'Simulações de imagem já feitas: ' + (c.simulacoes || 0) + ' de 2.',\n  c.pedido\n    ? 'Pedido registrado: ' + c.pedido.id + (c.pedido.pagamento === 'pix' ? ' (PIX, aguardando comprovante).' : ' (cartão, a equipe vai enviar o link).')\n    : 'Nenhum pedido registrado.',\n].join('\\n');\nconst systemPrompt = BASE_PROMPT.replace('{{TABELA_PRECOS}}', tabelaTexto).replace('{{ESTADO_CLIENTE}}', estado);\nreturn [{ json: { chatInput: msg.chatInput, systemPrompt, precosOk } }];"
+        },
+        "id": "c0a1b2c4-0002-4000-8000-000000000000",
+        "name": "Preparar contexto",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $('Normalizar mensagem WhatsApp').first().json.waFrom }}",
+          "contextWindowLength": 30
+        },
+        "id": "c0a1b2c4-0003-4000-8000-000000000000",
+        "name": "Memória da conversa",
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          1100,
+          928
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Regras de negócio da trilha de macas: preços (aba Resumo), frete por CEP, orçamento,\n// validação de CPF e código PIX \"copia e cola\". As contas são feitas aqui, nunca pela IA.\n//\n// O build-v3.js copia estas funções para os nós de código do n8n (fonte única da regra).\n// Testes: node workflow/orcamento.test.js\n\n// ---------- configuração ----------\nconst CONFIG = {\n  pix: {\n    chave: '62768656000106', // CNPJ da POWER LASH CILIOS E CURSOS LTDA\n    nome: 'POWER LASH CILIOS CURSOS', // até 25 caracteres, sem acento\n    cidade: 'BELO HORIZONTE', // até 15 caracteres, sem acento\n  },\n  // Frete por pedido (não por unidade)\n  frete: { bhCapital: 300, sudeste: 600, sul: 800, nordeste: 1000, centroOeste: 1000 },\n  acrescimoMochoBaseDourada: 50,\n};\n\n// ---------- utilidades ----------\nfunction semAcento(s) {\n  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');\n}\n\nfunction brl(v) {\n  const [int, dec] = Math.abs(v).toFixed(2).split('.');\n  return (v < 0 ? '-' : '') + 'R$ ' + int.replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.') + ',' + dec;\n}\n\nfunction numero(v) {\n  if (typeof v === 'number') return v;\n  const s = String(v || '').replace(/[^\\d,.-]/g, '');\n  if (!s) return NaN;\n  // \"2.990,00\" -> 2990.00 ; \"2990.0\" -> 2990\n  return s.includes(',') ? Number(s.replace(/\\./g, '').replace(',', '.')) : Number(s);\n}\n\n// ---------- preços (aba Resumo: A = variação, I = preço PIX, J = preço cartão) ----------\nfunction chaveVariacao({ modelo, massageador, baseDourada, mocho }) {\n  return [modelo, massageador ? 'mass' : 'sem-mass', baseDourada ? 'base' : 'sem-base', mocho ? 'mocho' : 'sem-mocho'].join('|');\n}\n\nfunction lerVariacao(nome) {\n  const n = semAcento(nome).toLowerCase();\n  if (/^mocho/.test(n.trim())) return { tipo: 'mocho' };\n  if (/carrinho/.test(n)) return { tipo: 'carrinho' };\n  const modelo = /master/.test(n) ? 'master' : /classica/.test(n) ? 'classica' : /luxo/.test(n) ? 'luxo' : null;\n  if (!modelo) return null;\n  return {\n    tipo: 'maca',\n    modelo,\n    massageador: /com massageador/.test(n),\n    baseDourada: /com base dourada/.test(n),\n    mocho: /\\+\\s*mocho/.test(n),\n  };\n}\n\n// values: matriz da API do Sheets (Resumo!A1:J60), com a linha de cabeçalho\nfunction parsePrecos(values) {\n  const tabela = { variacoes: {}, mocho: null, carrinho: null, linhas: [] };\n  for (const row of values || []) {\n    const nome = String(row[0] || '').trim();\n    const pix = numero(row[8]);\n    const cartao = numero(row[9]);\n    if (!nome || !isFinite(pix) || !isFinite(cartao)) continue;\n    const v = lerVariacao(nome);\n    if (!v) continue;\n    const preco = { nome, pix, cartao };\n    tabela.linhas.push(preco);\n    if (v.tipo === 'mocho') tabela.mocho = preco;\n    else if (v.tipo === 'carrinho') tabela.carrinho = preco;\n    else tabela.variacoes[chaveVariacao(v)] = preco;\n  }\n  return tabela;\n}\n\n// Texto da tabela para o prompt da IA (só preço de venda, nunca custo)\nfunction tabelaParaTexto(tabela) {\n  return tabela.linhas.map((l) => `- ${l.nome}: PIX ${brl(l.pix)} | Cartão ${brl(l.cartao)}`).join('\\n');\n}\n\n// ---------- frete pelo CEP ----------\nconst FAIXAS_CEP = [\n  [1000, 19999, 'SP'], [20000, 28999, 'RJ'], [29000, 29999, 'ES'], [30000, 39999, 'MG'],\n  [40000, 48999, 'BA'], [49000, 49999, 'SE'], [50000, 56999, 'PE'], [57000, 57999, 'AL'],\n  [58000, 58999, 'PB'], [59000, 59999, 'RN'], [60000, 63999, 'CE'], [64000, 64999, 'PI'],\n  [65000, 65999, 'MA'], [66000, 68899, 'PA'], [68900, 68999, 'AP'], [69000, 69299, 'AM'],\n  [69300, 69399, 'RR'], [69400, 69899, 'AM'], [69900, 69999, 'AC'], [70000, 72799, 'DF'],\n  [72800, 72999, 'GO'], [73000, 73699, 'DF'], [73700, 76799, 'GO'], [76800, 76999, 'RO'],\n  [77000, 77999, 'TO'], [78000, 78899, 'MT'], [79000, 79999, 'MS'], [80000, 87999, 'PR'],\n  [88000, 89999, 'SC'], [90000, 99999, 'RS'],\n];\nconst REGIAO_UF = {\n  sudeste: ['SP', 'RJ', 'ES', 'MG'],\n  sul: ['PR', 'SC', 'RS'],\n  nordeste: ['BA', 'SE', 'PE', 'AL', 'PB', 'RN', 'CE', 'PI', 'MA'],\n  centroOeste: ['DF', 'GO', 'MT', 'MS'],\n  norte: ['PA', 'AP', 'AM', 'RR', 'AC', 'RO', 'TO'],\n};\nconst NOME_REGIAO = { sudeste: 'Sudeste', sul: 'Sul', nordeste: 'Nordeste', centroOeste: 'Centro-Oeste', norte: 'Norte' };\n\nfunction freteDoCep(cepTexto) {\n  const cep = String(cepTexto || '').replace(/\\D/g, '');\n  if (cep.length !== 8) return { ok: false, motivo: 'cep_invalido' };\n  const n5 = Number(cep.slice(0, 5));\n  const faixa = FAIXAS_CEP.find(([a, b]) => n5 >= a && n5 <= b);\n  if (!faixa) return { ok: false, motivo: 'cep_invalido' };\n  const uf = faixa[2];\n  const regiao = Object.keys(REGIAO_UF).find((r) => REGIAO_UF[r].includes(uf));\n  const cepFmt = cep.slice(0, 5) + '-' + cep.slice(5);\n  // Belo Horizonte capital: CEP 30000-000 a 31999-999\n  const bhCapital = n5 >= 30000 && n5 <= 31999;\n  if (regiao === 'norte') return { ok: true, atende: false, cep: cepFmt, uf, regiao: NOME_REGIAO.norte };\n  const valor = bhCapital ? CONFIG.frete.bhCapital : CONFIG.frete[regiao];\n  return {\n    ok: true,\n    atende: true,\n    cep: cepFmt,\n    uf,\n    regiao: bhCapital ? 'Belo Horizonte (capital)' : NOME_REGIAO[regiao],\n    valor,\n  };\n}\n\n// ---------- orçamento ----------\nconst NOME_MODELO = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };\n\nfunction sim(v) {\n  return /^(s|sim|true|1|yes)$/i.test(String(v || '').trim());\n}\n\n// pedido: { modelo, massageador, base_dourada, mocho, mocho_base_dourada, carrinho, quantidade, cep }\nfunction calcularOrcamento(pedido, tabela) {\n  const modelo = semAcento(pedido.modelo).toLowerCase().trim();\n  if (!NOME_MODELO[modelo]) return { ok: false, erro: 'modelo' };\n  const quantidade = Math.max(1, parseInt(pedido.quantidade, 10) || 1);\n  const massageador = sim(pedido.massageador);\n  const baseDourada = modelo === 'master' && sim(pedido.base_dourada); // base dourada só na Master\n  const mocho = sim(pedido.mocho);\n  const mochoBaseDourada = mocho && modelo === 'master' && sim(pedido.mocho_base_dourada);\n  const carrinho = sim(pedido.carrinho);\n\n  const frete = freteDoCep(pedido.cep);\n  if (!frete.ok) return { ok: false, erro: 'cep' };\n  if (!frete.atende) return { ok: false, erro: 'regiao_nao_atendida', frete };\n\n  const itens = [];\n  const add = (descricao, precos, qtd) => itens.push({ descricao, qtd, pix: precos.pix * qtd, cartao: precos.cartao * qtd });\n\n  const semMocho = tabela.variacoes[chaveVariacao({ modelo, massageador, baseDourada, mocho: false })];\n  if (!semMocho) return { ok: false, erro: 'preco_indisponivel' };\n  const comMocho = mocho && tabela.variacoes[chaveVariacao({ modelo, massageador, baseDourada, mocho: true })];\n\n  const descMaca = [\n    NOME_MODELO[modelo],\n    massageador ? 'com massageador' : 'sem massageador',\n    modelo === 'master' ? (baseDourada ? 'com base dourada' : 'sem base dourada') : null,\n  ].filter(Boolean).join(', ');\n\n  if (comMocho) {\n    add(descMaca + ' + mocho na mesma cor (kit)', comMocho, quantidade);\n  } else {\n    add(descMaca, semMocho, quantidade);\n    if (mocho) {\n      if (!tabela.mocho) return { ok: false, erro: 'preco_indisponivel' };\n      add('Mocho na mesma cor da maca', tabela.mocho, quantidade);\n    }\n  }\n  if (mochoBaseDourada) {\n    const a = CONFIG.acrescimoMochoBaseDourada;\n    add('Base dourada no mocho', { pix: a, cartao: a }, quantidade);\n  }\n  if (carrinho) {\n    if (!tabela.carrinho) return { ok: false, erro: 'preco_indisponivel' };\n    add('Carrinho auxiliar preto', tabela.carrinho, quantidade);\n  }\n\n  const subtotalPix = itens.reduce((s, i) => s + i.pix, 0);\n  const subtotalCartao = itens.reduce((s, i) => s + i.cartao, 0);\n  return {\n    ok: true,\n    modelo,\n    quantidade,\n    massageador,\n    baseDourada,\n    mocho,\n    mochoBaseDourada,\n    carrinho,\n    itens,\n    frete,\n    subtotalPix,\n    subtotalCartao,\n    totalPix: subtotalPix + frete.valor,\n    totalCartao: subtotalCartao + frete.valor,\n  };\n}\n\nfunction orcamentoParaTexto(o) {\n  const linhas = ['*Orçamento MACAS PRO*', ''];\n  for (const i of o.itens) {\n    linhas.push(`• ${i.qtd}x ${i.descricao}`);\n    linhas.push(`   PIX ${brl(i.pix)} | Cartão ${brl(i.cartao)}`);\n  }\n  linhas.push(`• Frete para ${o.frete.regiao} (CEP ${o.frete.cep}): ${brl(o.frete.valor)}`);\n  linhas.push('');\n  linhas.push(`*Total no PIX: ${brl(o.totalPix)}*`);\n  linhas.push(`*Total no cartão: ${brl(o.totalCartao)}* (parcelado em até 12x)`);\n  return linhas.join('\\n');\n}\n\nfunction resumoOrcamento(o) {\n  const itens = o.itens.map((i) => `${i.qtd}x ${i.descricao}`).join('; ');\n  return `${itens}; frete ${brl(o.frete.valor)} (${o.frete.regiao}, CEP ${o.frete.cep}); total PIX ${brl(o.totalPix)}; total cartão ${brl(o.totalCartao)}`;\n}\n\n// ---------- CPF ----------\nfunction cpfValido(cpfTexto) {\n  const c = String(cpfTexto || '').replace(/\\D/g, '');\n  if (c.length !== 11 || /^(\\d)\\1{10}$/.test(c)) return false;\n  const dig = (n) => {\n    let s = 0;\n    for (let i = 0; i < n; i++) s += Number(c[i]) * (n + 1 - i);\n    const r = (s * 10) % 11;\n    return r === 10 ? 0 : r;\n  };\n  return dig(9) === Number(c[9]) && dig(10) === Number(c[10]);\n}\n\n// ---------- PIX copia e cola (BR Code estático, padrão do Banco Central) ----------\nfunction crc16(payload) {\n  let crc = 0xffff;\n  for (let i = 0; i < payload.length; i++) {\n    crc ^= payload.charCodeAt(i) << 8;\n    for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;\n  }\n  return crc.toString(16).toUpperCase().padStart(4, '0');\n}\n\nfunction gerarPix({ valor, txid }) {\n  const campo = (id, v) => id + String(v.length).padStart(2, '0') + v;\n  const limpa = (s, max) => semAcento(s).toUpperCase().replace(/[^A-Z0-9 ]/g, '').slice(0, max);\n  const conta = campo('00', 'br.gov.bcb.pix') + campo('01', CONFIG.pix.chave);\n  const id = String(txid || '***').replace(/[^A-Za-z0-9]/g, '').slice(0, 25) || '***';\n  const payload =\n    campo('00', '01') +\n    campo('26', conta) +\n    campo('52', '0000') +\n    campo('53', '986') +\n    campo('54', Number(valor).toFixed(2)) +\n    campo('58', 'BR') +\n    campo('59', limpa(CONFIG.pix.nome, 25)) +\n    campo('60', limpa(CONFIG.pix.cidade, 15)) +\n    campo('62', campo('05', id)) +\n    '6304';\n  return payload + crc16(payload);\n}\n\n\nconst msg = $('Normalizar mensagem WhatsApp').first().json;\nconst resp = $('Buscar preços').first().json || {};\nconst tabela = parsePrecos(Array.isArray(resp.values) ? resp.values : []);\nconst st = $getWorkflowStaticData('global');\nst.clientes = st.clientes || {};\nconst c = (st.clientes[msg.waFrom] = st.clientes[msg.waFrom] || {});\nlet texto = $input.first().json.output || '';\nconst extras = [];\n\nfunction marcador(nome) {\n  const re = new RegExp('\\\\[\\\\[' + nome + '\\\\s*\\\\|([^\\\\]]*)\\\\]\\\\]', 'i');\n  const m = texto.match(re);\n  if (!m) return null;\n  const kv = {};\n  for (const par of m[1].split('|')) {\n    const i = par.indexOf('=');\n    if (i > 0) kv[par.slice(0, i).trim().toLowerCase()] = par.slice(i + 1).trim();\n  }\n  return { kv, bruto: m[0] };\n}\nconst trocar = (m, novo) => { texto = texto.replace(m.bruto, novo); };\nconst ERRO_ORC = {\n  cep: 'Não consegui identificar esse CEP. Pode conferir e me mandar de novo?',\n  regiao_nao_atendida: 'Poxa, ainda não entregamos na região Norte. Assim que passarmos a atender, te aviso por aqui!',\n  preco_indisponivel: 'Não consegui carregar os valores agora. Vou te passar pra nossa equipe, que te manda o orçamento certinho: (31) 98349-4901 (Andrea).',\n  modelo: 'Me confirma qual modelo você quer: Clássica, Luxo ou Master?',\n};\n\n// ----- orçamento -----\nconst mo = marcador('ORCAMENTO');\nif (mo) {\n  const o = calcularOrcamento(mo.kv, tabela);\n  if (o.ok) {\n    trocar(mo, orcamentoParaTexto(o));\n    c.orcamento = { params: mo.kv, resumo: resumoOrcamento(o), totalPix: o.totalPix, totalCartao: o.totalCartao, cep: o.frete.cep, data: new Date().toISOString() };\n  } else {\n    trocar(mo, ERRO_ORC[o.erro] || ERRO_ORC.preco_indisponivel);\n  }\n}\n\n// ----- simulação -----\nlet gerar = false;\nlet simulacao = null;\nconst mi = marcador('GERAR_IMAGEM');\nif (mi) {\n  const kv = mi.kv;\n  const modelo = semAcento(kv.modelo || '').toLowerCase().trim();\n  const ok = ['classica', 'luxo', 'master'].includes(modelo) && kv.cor && kv.foto;\n  if (ok && (c.simulacoes || 0) >= 2) {\n    trocar(mi, '');\n    extras.push('Já fizemos as 2 simulações por aqui 😊 Pra ver outras combinações, o nosso time de macas te ajuda: (31) 99495-6526.');\n  } else if (ok) {\n    trocar(mi, '');\n    gerar = true;\n    c.simulacoes = (c.simulacoes || 0) + 1;\n    simulacao = {\n      modelo,\n      cor: kv.cor,\n      foto: kv.foto,\n      baseDourada: modelo === 'master' && sim(kv.base_dourada),\n      mocho: sim(kv.mocho),\n      mochoBaseDourada: modelo === 'master' && sim(kv.mocho) && sim(kv.mocho_base_dourada),\n      carrinho: sim(kv.carrinho),\n    };\n  } else {\n    trocar(mi, '');\n  }\n}\n\n// ----- pedido -----\nlet pedido = null;\nconst mp = marcador('PEDIDO');\nif (mp) {\n  const d = mp.kv;\n  const faltando = ['nome', 'cpf', 'endereco', 'numero', 'bairro', 'cidade', 'uf', 'cep', 'cor_tecido'].filter((k) => !d[k]);\n  const pagamento = /cart/i.test(d.pagamento || '') ? 'cartao' : /pix/i.test(d.pagamento || '') ? 'pix' : null;\n  let problema = null;\n  if (!c.orcamento) problema = 'Antes de fechar, deixa eu te passar o orçamento certinho. Me confirma o modelo, os opcionais e o CEP?';\n  else if (faltando.length) problema = 'Pra fechar o pedido ainda preciso de: ' + faltando.join(', ').replace(/_/g, ' ') + '.';\n  else if (!cpfValido(d.cpf)) problema = 'O CPF informado parece incorreto. Pode conferir e me mandar de novo?';\n  else if (!pagamento) problema = 'Você prefere pagar no PIX ou no cartão (em até 12x)?';\n  let o = null;\n  if (!problema) {\n    o = calcularOrcamento({ ...c.orcamento.params, cep: d.cep }, tabela);\n    if (!o.ok) problema = ERRO_ORC[o.erro] || ERRO_ORC.preco_indisponivel;\n    else if (o.frete.cep !== c.orcamento.cep) {\n      problema = 'Como o CEP de entrega mudou, o frete ficou assim:\\n\\n' + orcamentoParaTexto(o) + '\\n\\nPosso fechar com esses valores?';\n      c.orcamento = { params: { ...c.orcamento.params, cep: d.cep }, resumo: resumoOrcamento(o), totalPix: o.totalPix, totalCartao: o.totalCartao, cep: o.frete.cep, data: new Date().toISOString() };\n    }\n  }\n  if (problema) {\n    trocar(mp, problema);\n  } else {\n    st.seqPedido = (st.seqPedido || 0) + 1;\n    const id = 'MM' + String(st.seqPedido).padStart(4, '0');\n    const total = pagamento === 'pix' ? o.totalPix : o.totalCartao;\n    const cpf = d.cpf.replace(/\\D/g, '').replace(/(\\d{3})(\\d{3})(\\d{3})(\\d{2})/, '$1.$2.$3-$4');\n    const itens = o.itens.map((i) => i.qtd + 'x ' + i.descricao).join('; ');\n    const agora = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });\n    trocar(mp, 'Pedido *' + id + '* registrado! ✅\\n\\n' + itens + '\\nCor e tecido: ' + d.cor_tecido +\n      '\\nEntrega: ' + d.endereco + ', ' + d.numero + (d.complemento ? ' (' + d.complemento + ')' : '') + ' - ' + d.bairro + ', ' + d.cidade + '/' + d.uf + ', CEP ' + o.frete.cep +\n      '\\nFrete: ' + brl(o.frete.valor) +\n      '\\n*Total ' + (pagamento === 'pix' ? 'no PIX' : 'no cartão') + ': ' + brl(total) + '*');\n    if (pagamento === 'pix') {\n      extras.push('Pra pagar, copie o código abaixo e cole no app do seu banco, na opção *PIX copia e cola*. O valor (' + brl(total) + ') já vem preenchido, e o recebedor é a POWER LASH CILIOS E CURSOS LTDA.\\n\\nDepois me manda o comprovante por aqui, que a nossa equipe confere e confirma o seu pedido 💛');\n      extras.push(gerarPix({ valor: total, txid: id }));\n    } else {\n      extras.push('Nossa equipe vai gerar o link de pagamento no cartão (em até 12x), no valor de ' + brl(total) + ', e te envia por aqui em instantes 💛');\n    }\n    const linha = [\n      agora, id, pagamento === 'pix' ? 'Aguardando comprovante PIX' : 'Enviar link do cartão',\n      d.nome, msg.waFrom, d.telefone || '', cpf, d.email || '', d.endereco, d.numero, d.complemento || '',\n      d.bairro, d.cidade, d.uf, o.frete.cep, NOME_MODELO[o.modelo], String(o.quantidade), d.cor_tecido,\n      o.massageador ? 'Sim' : 'Não', o.baseDourada ? 'Sim' : 'Não', o.mocho ? 'Sim' : 'Não',\n      o.mochoBaseDourada ? 'Sim' : 'Não', o.carrinho ? 'Sim' : 'Não', itens, o.frete.valor, o.frete.regiao,\n      o.totalPix, o.totalCartao, pagamento === 'pix' ? 'PIX' : 'Cartão', d.obs || '',\n    ];\n    const avisoEquipe = [\n      '🛎️ *Novo pedido ' + id + '* (bot WhatsApp)',\n      'Cliente: ' + d.nome + ' | WhatsApp: +' + msg.waFrom + (d.telefone ? ' | Tel.: ' + d.telefone : ''),\n      'Itens: ' + itens,\n      'Cor e tecido: ' + d.cor_tecido,\n      'Entrega: ' + d.cidade + '/' + d.uf + ', CEP ' + o.frete.cep + ' | Frete ' + brl(o.frete.valor),\n      'Pagamento: ' + (pagamento === 'pix'\n        ? 'PIX de ' + brl(total) + ' (conferir o comprovante na conversa)'\n        : 'CARTÃO de ' + brl(total) + ' → gerar o link na Rede e enviar para a cliente'),\n      'Dados completos na planilha \"Pedidos Macas - Bot WhatsApp\".',\n    ].join('\\n');\n    pedido = { id, linha, avisoEquipe };\n    c.pedido = { id, pagamento, data: new Date().toISOString() };\n  }\n}\n\ntexto = texto.replace(/\\n{3,}/g, '\\n\\n').trim();\nconst mensagens = [texto, ...extras].filter((t) => t && t.trim()).map((t) => ({ texto: t }));\nreturn [{ json: { mensagens, gerar, foto: simulacao && simulacao.foto, simulacao, pedido } }];"
+        },
+        "id": "c0a1b2c4-0004-4000-8000-000000000000",
+        "name": "Separar resposta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1300,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "c0a1b2c4-0005-4000-8000-000000000000",
+                "leftValue": "={{ $json.gerar }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c0a1b2c4-0006-4000-8000-000000000000",
+        "name": "Gerar simulação?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1500,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "options": {},
+          "url": "={{ 'https://graph.facebook.com/v22.0/' + $json.foto }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi"
+        },
+        "id": "c0a1b2c4-0007-4000-8000-000000000000",
+        "name": "Buscar dados da foto",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          1700,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "file"
+              }
+            }
+          },
+          "url": "={{ $json.url }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi"
+        },
+        "id": "c0a1b2c4-0008-4000-8000-000000000000",
+        "name": "Baixar foto do ambiente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          1900,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fs = require('fs');\nconst ASSETS = \"C:/Users/denis/miriam-mota-bot/assets/\";\nconst sala = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst salaMime = $input.first().binary.data.mimeType || 'image/jpeg';\nconst s = $('Separar resposta').first().json.simulacao;\nconst nomes = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };\nconst ler = (arq) => (fs.existsSync(ASSETS + arq) ? fs.readFileSync(ASSETS + arq).toString('base64') : null);\nconst parts = [];\nconst ref = (rotulo, arq) => {\n  const b64 = ler(arq);\n  if (!b64) return false;\n  parts.push({ text: rotulo }, { inline_data: { mime_type: 'image/jpeg', data: b64 } });\n  return true;\n};\nif (!ref('BED REFERENCE (use only the bed; ignore its background):', 'macas/' + s.modelo + '.jpg')) throw new Error('foto de referência da maca não encontrada: ' + s.modelo);\nconst temRefMocho = s.mocho && ref('STOOL REFERENCE (use only the stool; ignore its background):', s.mochoBaseDourada ? 'acessorios/mocho-dourado.jpg' : 'acessorios/mocho.jpg');\nconst temRefCarrinho = s.carrinho && ref('TROLLEY REFERENCE (use only the trolley; ignore its background):', 'acessorios/carrinho.jpg');\nparts.push({ text: 'CUSTOMER ROOM (the scene to edit and return):' }, { inline_data: { mime_type: salaMime, data: sala.toString('base64') } });\n\nconst base = s.modelo === 'master'\n  ? (s.baseDourada ? 'The bed base and legs are gold, as in the BED REFERENCE.' : 'The bed base and legs must be matte black, not gold.')\n  : 'The bed has no gold parts.';\nconst linhas = [\n  'Edit the CUSTOMER ROOM photo: add to it the professional eyelash extension bed (\"maca\", model ' + nomes[s.modelo] + ') shown in the BED REFERENCE photo.',\n  'The result must be the CUSTOMER ROOM photo: same walls, floor, furniture, lighting and framing. Never return or reuse the background of any reference photo.',\n  'From each reference, copy only the product, with its exact design: shape, base, legs, tufting and proportions. Ignore every other object, person, wall and floor in the references, and do not mix in details from other furniture.',\n  'A reference may be a collage with several photos; all of them show the same single product.',\n  'Add exactly one full-size bed (a real treatment bed, around 1.9 m long), standing on the floor with realistic scale, matching the room perspective, light and shadows.',\n  'If the customer room already has a treatment bed or lounge bed, replace it with the new bed in the same position. Otherwise, place the new bed in a free and natural spot.',\n  'Change the upholstery color of the new bed to: ' + s.cor + '. ' + base,\n];\nif (s.mocho) linhas.push('Also add one professional stool (\"mocho\") next to the head of the bed' + (temRefMocho ? ', with the exact design of the STOOL REFERENCE' : ', round tufted seat with a low backrest, on a five-star base with casters') + ', upholstered in the same color as the bed (' + s.cor + '). ' + (s.mochoBaseDourada ? 'Its base is gold.' : 'Its base is matte black, not gold.'));\nif (s.carrinho) linhas.push('Also add one small auxiliary trolley next to the bed' + (temRefCarrinho ? ', with the exact design of the TROLLEY REFERENCE' : ', with shelves and casters') + '. The trolley is entirely black.');\nlinhas.push('Keep the colors of every other object in the room exactly as they are. When replacing an existing bed, remove it completely, including its legs and base, so that only the new bed remains.');\nlinhas.push('Do not add, remove or move other objects in the room, and do not add any text or logos. Return a single photorealistic image.');\nparts.push({ text: linhas.join('\\n') });\nreturn [{ json: { body: { contents: [{ role: 'user', parts }], generationConfig: { responseModalities: ['IMAGE'] } } } }];"
+        },
+        "id": "c0a1b2c4-0009-4000-8000-000000000000",
+        "name": "Montar pedido para o Gemini",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2100,
+          544
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "options": {
+            "timeout": 120000
+          },
+          "method": "POST",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify($json.body) }}"
+        },
+        "id": "c0a1b2c4-0010-4000-8000-000000000000",
+        "name": "Gerar imagem (Gemini)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          2300,
+          544
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "rfTfiWwqtSsWS7Kl",
+            "name": "Gemini API"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "async function aplicarMarcaDagua(buffer, canvasLib) {\n  const { createCanvas, loadImage } = canvasLib;\n  const img = await loadImage(buffer);\n  const W = img.width;\n  const H = img.height;\n  const canvas = createCanvas(W, H);\n  const g = canvas.getContext('2d');\n  g.drawImage(img, 0, 0, W, H);\n\n  // Tamanho proporcional ao lado menor da foto\n  const base = Math.min(W, H);\n  const tituloPx = Math.round(base * 0.075);\n  const subPx = Math.round(tituloPx * 0.36);\n  const gap = Math.round(tituloPx * 0.18);\n  const margemBaixo = Math.round(base * 0.045);\n  const cx = W / 2;\n  const ySub = H - margemBaixo;\n  const yTitulo = ySub - subPx - gap;\n\n  g.save();\n  g.textAlign = 'center';\n  g.textBaseline = 'alphabetic';\n  g.fillStyle = 'rgba(255,255,255,0.82)';\n  g.shadowColor = 'rgba(0,0,0,0.45)';\n  g.shadowBlur = Math.round(tituloPx * 0.12);\n  g.shadowOffsetY = Math.max(1, Math.round(tituloPx * 0.03));\n\n  g.font = `condensed bold ${tituloPx}px \"Bodoni MT\", Georgia, serif`;\n  g.fillText('MACAS PRO', cx, yTitulo);\n\n  // \"MIRIAM MOTA\" com espaçamento entre letras, com a mesma largura do título\n  const larguraTitulo = g.measureText('MACAS PRO').width;\n  g.font = `${subPx}px \"Gill Sans MT\", \"Century Gothic\", Arial, sans-serif`;\n  const letras = 'MIRIAM MOTA'.split('');\n  const larguraLetras = letras.reduce((s, l) => s + g.measureText(l).width, 0);\n  const espaco = Math.max(0, (larguraTitulo - larguraLetras) / (letras.length - 1));\n  let x = cx - larguraTitulo / 2;\n  g.textAlign = 'left';\n  for (const l of letras) {\n    g.fillText(l, x, ySub);\n    x += g.measureText(l).width + espaco;\n  }\n  g.restore();\n\n  return canvas.encode('jpeg', 90);\n}\n\nconst res = $input.first().json;\nconst parts = res?.candidates?.[0]?.content?.parts || [];\nconst img = parts.find((p) => (p.inlineData || p.inline_data)?.data);\nif (!img) throw new Error('O Gemini não devolveu imagem: ' + JSON.stringify(res).slice(0, 500));\nconst d = img.inlineData || img.inline_data;\nconst comMarca = await aplicarMarcaDagua(Buffer.from(d.data, 'base64'), require('@napi-rs/canvas'));\nconst data = await this.helpers.prepareBinaryData(comMarca, 'simulacao-macas-pro.jpg', 'image/jpeg');\nreturn [{ json: { mime: 'image/jpeg' }, binary: { data } }];"
+        },
+        "id": "c0a1b2c4-0011-4000-8000-000000000000",
+        "name": "Extrair imagem e aplicar marca",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2500,
+          544
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "options": {},
+          "method": "POST",
+          "url": "https://graph.facebook.com/v22.0/1141510365703813/media",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi",
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "parameterType": "formData",
+                "name": "messaging_product",
+                "value": "whatsapp"
+              },
+              {
+                "parameterType": "formData",
+                "name": "type",
+                "value": "={{ $json.mime }}"
+              },
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              }
+            ]
+          }
+        },
+        "id": "c0a1b2c4-0012-4000-8000-000000000000",
+        "name": "Subir imagem no WhatsApp",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          2700,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "options": {},
+          "method": "POST",
+          "url": "https://graph.facebook.com/v22.0/1141510365703813/messages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $('Normalizar mensagem WhatsApp').first().json.waFrom, type: 'image', image: { id: $json.id, caption: 'Simulação ilustrativa: a cor real pode variar um pouco.' } }) }}"
+        },
+        "id": "c0a1b2c4-0013-4000-8000-000000000000",
+        "name": "Enviar simulação",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          2900,
+          544
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "send",
+          "phoneNumberId": "=1141510365703813",
+          "recipientPhoneNumber": "={{ $('Normalizar mensagem WhatsApp').first().json.waFrom }}",
+          "textBody": "Tive um probleminha pra gerar a simulação agora. Pra te mostrar certinho como fica, fala direto com o nosso time de macas: (31) 99495-6526.",
+          "additionalFields": {}
+        },
+        "id": "c0a1b2c4-0014-4000-8000-000000000000",
+        "name": "Avisar falha na simulação",
+        "type": "n8n-nodes-base.whatsApp",
+        "typeVersion": 1,
+        "position": [
+          2900,
+          800
+        ],
+        "webhookId": "c0a1b2c3-0013-4000-8000-0000000000ff",
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "return ($('Separar resposta').first().json.mensagens || []).map((m) => ({ json: m }));"
+        },
+        "id": "c0a1b2c4-0015-4000-8000-000000000000",
+        "name": "Mensagens para a cliente",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3050,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const p = $('Separar resposta').first().json.pedido;\nreturn p ? [{ json: p }] : [];"
+        },
+        "id": "c0a1b2c4-0016-4000-8000-000000000000",
+        "name": "Tem pedido?",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3400,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "options": {},
+          "method": "POST",
+          "url": "https://sheets.googleapis.com/v4/spreadsheets/1jVlvqoQ7R0_1L2cXaKQZU1gvnsA9Oe1X4c06u67VFxc/values/A1:append",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleSheetsOAuth2Api",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "valueInputOption",
+                "value": "RAW"
+              },
+              {
+                "name": "insertDataOption",
+                "value": "INSERT_ROWS"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ values: [$json.linha] }) }}"
+        },
+        "id": "c0a1b2c4-0017-4000-8000-000000000000",
+        "name": "Registrar pedido na planilha",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          3600,
+          704
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "PREENCHER",
+            "name": "Google Sheets"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "options": {},
+          "method": "POST",
+          "url": "https://graph.facebook.com/v22.0/1141510365703813/messages",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "whatsAppApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: '5531983494901', type: 'text', text: { body: $('Tem pedido?').first().json.avisoEquipe } }) }}"
+        },
+        "id": "c0a1b2c4-0018-4000-8000-000000000000",
+        "name": "Avisar equipe",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          3800,
+          704
+        ],
+        "credentials": {
+          "whatsAppApi": {
+            "id": "w7DrLb69EuNWntu4",
+            "name": "WhatsApp account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "Chat Trigger (teste)": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WhatsApp Trigger": {
+        "main": [
+          [
+            {
+              "node": "Normalizar mensagem WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalizar mensagem WhatsApp": {
+        "main": [
+          [
+            {
+              "node": "Buscar preços",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent (WhatsApp)": {
+        "main": [
+          [
+            {
+              "node": "Separar resposta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Instagram Trigger": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar preços": {
+        "main": [
+          [
+            {
+              "node": "Preparar contexto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar contexto": {
+        "main": [
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Memória da conversa": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent (WhatsApp)",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Separar resposta": {
+        "main": [
+          [
+            {
+              "node": "Gerar simulação?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar simulação?": {
+        "main": [
+          [
+            {
+              "node": "Buscar dados da foto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Mensagens para a cliente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar dados da foto": {
+        "main": [
+          [
+            {
+              "node": "Baixar foto do ambiente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Baixar foto do ambiente": {
+        "main": [
+          [
+            {
+              "node": "Montar pedido para o Gemini",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Montar pedido para o Gemini": {
+        "main": [
+          [
+            {
+              "node": "Gerar imagem (Gemini)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar imagem (Gemini)": {
+        "main": [
+          [
+            {
+              "node": "Extrair imagem e aplicar marca",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrair imagem e aplicar marca": {
+        "main": [
+          [
+            {
+              "node": "Subir imagem no WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Subir imagem no WhatsApp": {
+        "main": [
+          [
+            {
+              "node": "Enviar simulação",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar simulação": {
+        "main": [
+          [
+            {
+              "node": "Mensagens para a cliente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Avisar falha na simulação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mensagens para a cliente": {
+        "main": [
+          [
+            {
+              "node": "Enviar Resposta WhatsApp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar Resposta WhatsApp": {
+        "main": [
+          [
+            {
+              "node": "Tem pedido?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem pedido?": {
+        "main": [
+          [
+            {
+              "node": "Registrar pedido na planilha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar pedido na planilha": {
+        "main": [
+          [
+            {
+              "node": "Avisar equipe",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "binaryMode": "separate"
+    },
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionId": "685f9fb4-5553-41b7-92d1-a51cacec339e",
+    "activeVersionId": "685f9fb4-5553-41b7-92d1-a51cacec339e",
+    "versionCounter": 25,
+    "triggerCount": 3,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "versionMetadata": {
+      "name": "Version 685f9fb4",
+      "description": ""
+    }
+  }
+]

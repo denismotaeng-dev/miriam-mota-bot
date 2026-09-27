@@ -12,4 +12,4 @@
 .env.*
 
 # Resultado do teste de simulação
-assets/teste-simulacao.*
+assets/teste-*

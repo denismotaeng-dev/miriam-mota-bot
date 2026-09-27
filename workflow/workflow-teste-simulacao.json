@@ -16,7 +16,7 @@
       },
       {
         "parameters": {
-          "jsCode": "return [{ json: { modelo: 'classica', cor: 'azul marinho', foto: 'teste' } }];"
+          "jsCode": "return [{ json: { simulacao: {\"modelo\":\"master\",\"cor\":\"rosa bebê\",\"foto\":\"teste\",\"baseDourada\":true,\"mocho\":true,\"mochoBaseDourada\":true,\"carrinho\":true} } }];"
         },
         "id": "d0000000-0000-4000-8000-000000000002",
         "name": "Separar resposta",
@@ -44,10 +44,10 @@
       },
       {
         "parameters": {
-          "jsCode": "const item = $input.first();\nconst buf = await this.helpers.getBinaryDataBuffer(0, 'data');\nreturn [{ json: { b64: buf.toString('base64'), mime: item.binary.data.mimeType || 'image/jpeg' } }];"
+          "jsCode": "const fs = require('fs');\nconst ASSETS = \"C:/Users/denis/miriam-mota-bot/assets/\";\nconst sala = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst salaMime = $input.first().binary.data.mimeType || 'image/jpeg';\nconst s = $('Separar resposta').first().json.simulacao;\nconst nomes = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };\nconst ler = (arq) => (fs.existsSync(ASSETS + arq) ? fs.readFileSync(ASSETS + arq).toString('base64') : null);\nconst parts = [];\nconst ref = (rotulo, arq) => {\n  const b64 = ler(arq);\n  if (!b64) return false;\n  parts.push({ text: rotulo }, { inline_data: { mime_type: 'image/jpeg', data: b64 } });\n  return true;\n};\nif (!ref('BED REFERENCE (use only the bed; ignore its background):', 'macas/' + s.modelo + '.jpg')) throw new Error('foto de referência da maca não encontrada: ' + s.modelo);\nconst temRefMocho = s.mocho && ref('STOOL REFERENCE (use only the stool; ignore its background):', s.mochoBaseDourada ? 'acessorios/mocho-dourado.jpg' : 'acessorios/mocho.jpg');\nconst temRefCarrinho = s.carrinho && ref('TROLLEY REFERENCE (use only the trolley; ignore its background):', 'acessorios/carrinho.jpg');\nparts.push({ text: 'CUSTOMER ROOM (the scene to edit and return):' }, { inline_data: { mime_type: salaMime, data: sala.toString('base64') } });\n\nconst base = s.modelo === 'master'\n  ? (s.baseDourada ? 'The bed base and legs are gold, as in the BED REFERENCE.' : 'The bed base and legs must be matte black, not gold.')\n  : 'The bed has no gold parts.';\nconst linhas = [\n  'Edit the CUSTOMER ROOM photo: add to it the professional eyelash extension bed (\"maca\", model ' + nomes[s.modelo] + ') shown in the BED REFERENCE photo.',\n  'The result must be the CUSTOMER ROOM photo: same walls, floor, furniture, lighting and framing. Never return or reuse the background of any reference photo.',\n  'From each reference, copy only the product, with its exact design: shape, base, legs, tufting and proportions. Ignore every other object, person, wall and floor in the references, and do not mix in details from other furniture.',\n  'A reference may be a collage with several photos; all of them show the same single product.',\n  'Add exactly one full-size bed (a real treatment bed, around 1.9 m long), standing on the floor with realistic scale, matching the room perspective, light and shadows.',\n  'If the customer room already has a treatment bed or lounge bed, replace it with the new bed in the same position. Otherwise, place the new bed in a free and natural spot.',\n  'Change the upholstery color of the new bed to: ' + s.cor + '. ' + base,\n];\nif (s.mocho) linhas.push('Also add one professional stool (\"mocho\") next to the head of the bed' + (temRefMocho ? ', with the exact design of the STOOL REFERENCE' : ', round tufted seat with a low backrest, on a five-star base with casters') + ', upholstered in the same color as the bed (' + s.cor + '). ' + (s.mochoBaseDourada ? 'Its base is gold.' : 'Its base is matte black, not gold.'));\nif (s.carrinho) linhas.push('Also add one small auxiliary trolley next to the bed' + (temRefCarrinho ? ', with the exact design of the TROLLEY REFERENCE' : ', with shelves and casters') + '. The trolley is entirely black.');\nlinhas.push('Keep the colors of every other object in the room exactly as they are. When replacing an existing bed, remove it completely, including its legs and base, so that only the new bed remains.');\nlinhas.push('Do not add, remove or move other objects in the room, and do not add any text or logos. Return a single photorealistic image.');\nparts.push({ text: linhas.join('\\n') });\nreturn [{ json: { body: { contents: [{ role: 'user', parts }], generationConfig: { responseModalities: ['IMAGE'] } } } }];"
         },
-        "id": "c0a1b2c3-0006-4000-8000-000000000006",
-        "name": "Foto do ambiente em base64",
+        "id": "c0a1b2c4-0009-4000-8000-000000000000",
+        "name": "Montar pedido para o Gemini",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
@@ -57,51 +57,23 @@
       },
       {
         "parameters": {
-          "operation": "read",
-          "fileSelector": "={{ 'C:/Users/denis/miriam-mota-bot/assets/macas/' + $('Separar resposta').first().json.modelo + '.jpg' }}",
-          "options": {}
-        },
-        "id": "c0a1b2c3-0007-4000-8000-000000000007",
-        "name": "Ler foto da maca",
-        "type": "n8n-nodes-base.readWriteFile",
-        "typeVersion": 1.1,
-        "position": [
-          800,
-          0
-        ]
-      },
-      {
-        "parameters": {
-          "jsCode": "const maca = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst macaMime = $input.first().binary.data.mimeType || 'image/jpeg';\nconst sala = $('Foto do ambiente em base64').first().json;\nconst r = $('Separar resposta').first().json;\nconst nomes = { classica: 'MACA PRO Clássica', luxo: 'MACA PRO Luxo', master: 'MACA PRO Master' };\nconst prompt = [\n  'Edit the CUSTOMER ROOM photo: add to it the professional eyelash extension bed (\"maca\", model ' + nomes[r.modelo] + ') shown in the PRODUCT REFERENCE photo.',\n  'The result must be the CUSTOMER ROOM photo: same walls, floor, furniture, lighting and framing. Never return or reuse the background of the PRODUCT REFERENCE photo.',\n  'From the PRODUCT REFERENCE, copy only the bed, with its exact design: shape, base, legs, tufting and proportions. Ignore every other object, person, wall and floor in that photo, and do not mix in details from other furniture.',\n  'The PRODUCT REFERENCE may be a collage with several photos; all of them show the same single bed model.',\n  'Add exactly one full-size bed (a real treatment bed, around 1.9 m long), standing on the floor with realistic scale, matching the room perspective, light and shadows.',\n  'If the customer room already has a treatment bed or lounge bed, replace it with the new bed in the same position. Otherwise, place the new bed in a free and natural spot.',\n  'Change only the upholstery color of the new bed to: ' + r.cor + '. Keep the colors of every other object in the room exactly as they are.',\n  'When replacing an existing bed, remove it completely, including its legs and base, so that only the new bed remains.',\n  'Do not add, remove or move other objects in the room, and do not add any text or logos. Return a single photorealistic image.',\n].join('\\n');\nreturn [{ json: { body: {\n  contents: [{ role: 'user', parts: [\n    { text: 'PRODUCT REFERENCE (use only the bed; ignore its background):' },\n    { inline_data: { mime_type: macaMime, data: maca.toString('base64') } },\n    { text: 'CUSTOMER ROOM (the scene to edit and return):' },\n    { inline_data: { mime_type: sala.mime, data: sala.b64 } },\n    { text: prompt },\n  ] }],\n  generationConfig: { responseModalities: ['IMAGE'] },\n} } }];"
-        },
-        "id": "c0a1b2c3-0008-4000-8000-000000000008",
-        "name": "Montar pedido para o Gemini",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          1000,
-          0
-        ]
-      },
-      {
-        "parameters": {
+          "options": {
+            "timeout": 120000
+          },
           "method": "POST",
           "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
           "authentication": "genericCredentialType",
           "genericAuthType": "httpHeaderAuth",
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={{ JSON.stringify($json.body) }}",
-          "options": {
-            "timeout": 120000
-          }
+          "jsonBody": "={{ JSON.stringify($json.body) }}"
         },
-        "id": "c0a1b2c3-0009-4000-8000-000000000009",
+        "id": "c0a1b2c4-0010-4000-8000-000000000000",
         "name": "Gerar imagem (Gemini)",
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.5,
         "position": [
-          1200,
+          800,
           0
         ],
         "credentials": {
@@ -113,21 +85,21 @@
       },
       {
         "parameters": {
-          "jsCode": "const res = $input.first().json;\nconst parts = res?.candidates?.[0]?.content?.parts || [];\nconst img = parts.find((p) => (p.inlineData || p.inline_data)?.data);\nif (!img) throw new Error('O Gemini não devolveu imagem: ' + JSON.stringify(res).slice(0, 500));\nconst d = img.inlineData || img.inline_data;\nconst mime = d.mimeType || d.mime_type || 'image/png';\nconst ext = mime.split('/')[1] || 'png';\nconst data = await this.helpers.prepareBinaryData(Buffer.from(d.data, 'base64'), 'simulacao.' + ext, mime);\nreturn [{ json: { mime }, binary: { data } }];"
+          "jsCode": "async function aplicarMarcaDagua(buffer, canvasLib) {\n  const { createCanvas, loadImage } = canvasLib;\n  const img = await loadImage(buffer);\n  const W = img.width;\n  const H = img.height;\n  const canvas = createCanvas(W, H);\n  const g = canvas.getContext('2d');\n  g.drawImage(img, 0, 0, W, H);\n\n  // Tamanho proporcional ao lado menor da foto\n  const base = Math.min(W, H);\n  const tituloPx = Math.round(base * 0.075);\n  const subPx = Math.round(tituloPx * 0.36);\n  const gap = Math.round(tituloPx * 0.18);\n  const margemBaixo = Math.round(base * 0.045);\n  const cx = W / 2;\n  const ySub = H - margemBaixo;\n  const yTitulo = ySub - subPx - gap;\n\n  g.save();\n  g.textAlign = 'center';\n  g.textBaseline = 'alphabetic';\n  g.fillStyle = 'rgba(255,255,255,0.82)';\n  g.shadowColor = 'rgba(0,0,0,0.45)';\n  g.shadowBlur = Math.round(tituloPx * 0.12);\n  g.shadowOffsetY = Math.max(1, Math.round(tituloPx * 0.03));\n\n  g.font = `condensed bold ${tituloPx}px \"Bodoni MT\", Georgia, serif`;\n  g.fillText('MACAS PRO', cx, yTitulo);\n\n  // \"MIRIAM MOTA\" com espaçamento entre letras, com a mesma largura do título\n  const larguraTitulo = g.measureText('MACAS PRO').width;\n  g.font = `${subPx}px \"Gill Sans MT\", \"Century Gothic\", Arial, sans-serif`;\n  const letras = 'MIRIAM MOTA'.split('');\n  const larguraLetras = letras.reduce((s, l) => s + g.measureText(l).width, 0);\n  const espaco = Math.max(0, (larguraTitulo - larguraLetras) / (letras.length - 1));\n  let x = cx - larguraTitulo / 2;\n  g.textAlign = 'left';\n  for (const l of letras) {\n    g.fillText(l, x, ySub);\n    x += g.measureText(l).width + espaco;\n  }\n  g.restore();\n\n  return canvas.encode('jpeg', 90);\n}\n\nconst res = $input.first().json;\nconst parts = res?.candidates?.[0]?.content?.parts || [];\nconst img = parts.find((p) => (p.inlineData || p.inline_data)?.data);\nif (!img) throw new Error('O Gemini não devolveu imagem: ' + JSON.stringify(res).slice(0, 500));\nconst d = img.inlineData || img.inline_data;\nconst comMarca = await aplicarMarcaDagua(Buffer.from(d.data, 'base64'), require('@napi-rs/canvas'));\nconst data = await this.helpers.prepareBinaryData(comMarca, 'simulacao-macas-pro.jpg', 'image/jpeg');\nreturn [{ json: { mime: 'image/jpeg' }, binary: { data } }];"
         },
-        "id": "c0a1b2c3-0010-4000-8000-000000000010",
-        "name": "Extrair imagem gerada",
+        "id": "c0a1b2c4-0011-4000-8000-000000000000",
+        "name": "Extrair imagem e aplicar marca",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1400,
+          1000,
           0
         ]
       },
       {
         "parameters": {
           "operation": "write",
-          "fileName": "={{ 'C:/Users/denis/miriam-mota-bot/assets/teste-simulacao.' + ($json.mime.split('/')[1] || 'png') }}",
+          "fileName": "C:/Users/denis/miriam-mota-bot/assets/teste-simulacao.jpg",
           "options": {}
         },
         "id": "d0000000-0000-4000-8000-000000000009",
@@ -135,7 +107,7 @@
         "type": "n8n-nodes-base.readWriteFile",
         "typeVersion": 1.1,
         "position": [
-          1600,
+          1200,
           0
         ]
       }
@@ -167,28 +139,6 @@
         "main": [
           [
             {
-              "node": "Foto do ambiente em base64",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Foto do ambiente em base64": {
-        "main": [
-          [
-            {
-              "node": "Ler foto da maca",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Ler foto da maca": {
-        "main": [
-          [
-            {
               "node": "Montar pedido para o Gemini",
               "type": "main",
               "index": 0
@@ -211,14 +161,14 @@
         "main": [
           [
             {
-              "node": "Extrair imagem gerada",
+              "node": "Extrair imagem e aplicar marca",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Extrair imagem gerada": {
+      "Extrair imagem e aplicar marca": {
         "main": [
           [
             {
