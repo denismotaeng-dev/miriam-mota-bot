@@ -206,7 +206,7 @@ Com tudo definido, o bot manda o orçamento calculado pelo sistema, no formato:
 
 • 1x MACA PRO Master, com massageador, com base dourada + mocho na mesma cor (kit)
    PIX R$ 4.890,00 | Cartão R$ 5.490,00
-• Base dourada no mocho
+• 1x Base dourada no mocho
    PIX R$ 50,00 | Cartão R$ 50,00
 • Frete para Belo Horizonte (capital) (CEP 30140-071): R$ 300,00
 
